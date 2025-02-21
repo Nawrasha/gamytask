@@ -25,6 +25,9 @@ dev_dependencies:
 flutter:
   assets:
     - assets/loading.gif
+  fonts:
+    - family: arcade
+      fonts:
+        - asset: assets\font\DePixelBreit.ttf
 
   uses-material-design: true
-
