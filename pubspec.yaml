@@ -25,6 +25,11 @@ dev_dependencies:
 flutter:
   assets:
     - assets/loading.gif
+    - assets/Home.png
+    - assets/EditSquare.png
+    - assets/Folder.png
+    - assets/Profile.png
+
   fonts:
     - family: arcade
       fonts:
