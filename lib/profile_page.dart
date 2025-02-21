@@ -5,16 +5,6 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-<<<<<<< HEAD
-    return const Center(
-      child: Text(
-        'Profile Page',
-        style: TextStyle(color: Colors.white, fontSize: 24),
-      ),
-    );
-  }
-}
-=======
     return Scaffold(
       
       body: SafeArea(
@@ -204,4 +194,3 @@ class ProfilePage extends StatelessWidget {
     );
   }
 }
->>>>>>> adamch
