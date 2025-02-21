@@ -30,6 +30,10 @@ class TaskManagerScreen extends StatelessWidget {
               child: Text(
                 getTodaysName(),
                 style: const TextStyle(
+<<<<<<< HEAD
+=======
+                  fontFamily: 'arcade',
+>>>>>>> adamch
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                   color: Colors.white, // White text for the heading
@@ -40,6 +44,10 @@ class TaskManagerScreen extends StatelessWidget {
             const Text(
               "Let's eat tasks together",
               style: TextStyle(
+<<<<<<< HEAD
+=======
+                fontFamily: 'arcade',
+>>>>>>> adamch
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
                 color: Colors.white, // White text for the heading

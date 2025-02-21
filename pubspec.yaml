@@ -25,6 +25,13 @@ dev_dependencies:
 flutter:
   assets:
     - assets/loading.gif
+<<<<<<< HEAD
+=======
+  fonts:
+    - family: arcade
+      fonts:
+        - asset: assets\font\DePixelBreit.ttf
+>>>>>>> adamch
 
   uses-material-design: true
 
