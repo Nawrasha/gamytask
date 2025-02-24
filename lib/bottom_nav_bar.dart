@@ -59,26 +59,9 @@ class BottomNavBar extends StatelessWidget {
           label: '',
         ),
 
-        /*BottomNavigationBarItem(
-          icon: Icon(Icons.home),
-          label: '',
-        ),
-   
-   
-        BottomNavigationBarItem(
-          icon: Icon(Icons.analytics),
-          label: '',
-        ),
-       
-        BottomNavigationBarItem(
-          icon: Icon(Icons.person),
-          label: '',
-        ),
-     
-     */
       ],
     );
 
 
   }
-}
+}     

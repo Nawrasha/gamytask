@@ -44,8 +44,8 @@ class _MainScreenState extends State<MainScreen> {
   final List<Widget> _pages = [
     const TaskManagerScreen(), // Your existing Task Manager screen
     const StatsPage(), // Example: A stats page
-    const ProfilePage(), // Example: A profile page
     const NotePage(),
+    const ProfilePage(), 
     
   ];
 
