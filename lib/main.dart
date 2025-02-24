@@ -45,7 +45,11 @@ class _MainScreenState extends State<MainScreen> {
     const TaskManagerScreen(), // Your existing Task Manager screen
     const StatsPage(), // Example: A stats page
     const NotePage(),
+<<<<<<< HEAD
     const ProfilePage(), 
+=======
+    const ProfilePage(), // Example: A profile page
+>>>>>>> origin/main
     
   ];
 
