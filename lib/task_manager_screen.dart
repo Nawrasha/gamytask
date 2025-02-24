@@ -21,7 +21,9 @@ class TaskManagerScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        
+        decoration: BoxDecoration(
+          color: Color(0xFF0A0C16), // Background color: #0A0C16
+        ),
         child: SafeArea(
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(16.0),
@@ -243,10 +245,11 @@ class TaskManagerScreen extends StatelessWidget {
   }) {
     return Card(
       elevation: 4,
+      color: Colors.transparent, // Transparent background
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
         side: BorderSide(
-          color: Colors.grey, // Grey border
+          color: Colors.grey, // Grey contour
           width: 2,
         ),
       ),
