@@ -21,16 +21,7 @@ class TaskManagerScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Colors.black,
-              Colors.grey.shade900,
-            ],
-          ),
-        ),
+        
         child: SafeArea(
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(16.0),
@@ -130,22 +121,11 @@ class TaskManagerScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Colors.black.withOpacity(0.6),
-            Colors.grey.shade900.withOpacity(0.6),
-          ],
+        border: Border.all(
+          color: Colors.grey, // Grey contour for the border
+          width: 2,
         ),
         borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.white.withOpacity(0.1),
-            blurRadius: 10,
-            spreadRadius: 2,
-          ),
-        ],
       ),
       child: Row(
         children: [
@@ -194,8 +174,9 @@ class TaskManagerScreen extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Colors.deepPurple, Colors.purple],
+                  border: Border.all(
+                    color: Colors.grey, // Grey contour
+                    width: 2,
                   ),
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -225,8 +206,9 @@ class TaskManagerScreen extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Colors.deepPurple, Colors.purple],
+                  border: Border.all(
+                    color: Colors.grey, // Grey contour
+                    width: 2,
                   ),
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -261,9 +243,12 @@ class TaskManagerScreen extends StatelessWidget {
   }) {
     return Card(
       elevation: 4,
-      color: Colors.black.withOpacity(0.6),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
+        side: BorderSide(
+          color: Colors.grey, // Grey border
+          width: 2,
+        ),
       ),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -294,7 +279,10 @@ class TaskManagerScreen extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: color.withOpacity(0.2),
+                    border: Border.all(
+                      color: Colors.grey, // Grey contour
+                      width: 1,
+                    ),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
