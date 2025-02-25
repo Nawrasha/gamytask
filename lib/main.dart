@@ -3,6 +3,10 @@ import 'bottom_nav_bar.dart'; // Import the BottomNavBar widget
 import 'task_manager_screen.dart'; // Import the TaskManagerScreen
 import 'stats_page.dart'; // Import the StatsPage
 import 'profile_page.dart'; // Import the ProfilePage
+<<<<<<< HEAD
+=======
+import 'note_page.dart'; // Import the ProfilePage
+>>>>>>> main
 
 void main() {
   runApp(const MyApp());
@@ -17,8 +21,17 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Task Manager',
       theme: ThemeData(
+<<<<<<< HEAD
         primarySwatch: Colors.blue,
         scaffoldBackgroundColor: const Color(0xFF0A0C16), // Dark background
+=======
+        brightness: Brightness.dark, // Enforces a dark theme
+        scaffoldBackgroundColor: const Color(0xFF0A0C16), // Dark background for the app
+        primaryColor: const Color(0xFF0A0C16), // Dark color for primary elements
+        bottomAppBarTheme: BottomAppBarTheme(
+        color: const Color(0xFF0A0C16), // Dark background for Bottom App Bar
+        ),
+>>>>>>> main
       ),
       home: const MainScreen(), // MainScreen is the initial screen
     );
@@ -39,6 +52,7 @@ class _MainScreenState extends State<MainScreen> {
   final List<Widget> _pages = [
     const TaskManagerScreen(), // Your existing Task Manager screen
     const StatsPage(), // Example: A stats page
+<<<<<<< HEAD
     const ProfilePage(), // Example: A profile page
   ];
 
@@ -46,12 +60,30 @@ class _MainScreenState extends State<MainScreen> {
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
+=======
+    const NotePage(),
+    const ProfilePage(), 
+    
+  ];
+
+  // Function to handle tab selection
+   void _onItemTapped(int index) {
+    setState(() {
+      // Ensure index is within valid range (0, 1, 2)
+      if (index >= 0 && index < 4) {
+        _selectedIndex = index;
+      }
+>>>>>>> main
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+<<<<<<< HEAD
+=======
+      backgroundColor: const Color(0xFF0A0C16), // Dark background for the whole screen
+>>>>>>> main
       body: _pages[_selectedIndex], // Display the selected page
       bottomNavigationBar: BottomNavBar(
         currentIndex: _selectedIndex,

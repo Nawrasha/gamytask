@@ -25,6 +25,20 @@ dev_dependencies:
 flutter:
   assets:
     - assets/loading.gif
+<<<<<<< HEAD
 
   uses-material-design: true
 
+=======
+    - assets/Home.png
+    - assets/EditSquare.png
+    - assets/Folder.png
+    - assets/Profile.png
+
+  fonts:
+    - family: arcade
+      fonts:
+        - asset: assets\font\DePixelBreit.ttf
+
+  uses-material-design: true
+>>>>>>> main
