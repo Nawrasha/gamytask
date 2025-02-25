@@ -14,6 +14,7 @@ dependencies:
 
   cupertino_icons: ^1.0.8
   flutter_gif: 0.0.4
+  percent_indicator: ^4.2.2
 
 dev_dependencies:
   flutter_test:
@@ -21,24 +22,20 @@ dev_dependencies:
 
   flutter_lints: ^5.0.0
 
-
 flutter:
   assets:
     - assets/loading.gif
-<<<<<<< HEAD
-
-  uses-material-design: true
-
-=======
     - assets/Home.png
     - assets/EditSquare.png
     - assets/Folder.png
     - assets/Profile.png
 
+  uses-material-design: true
+
   fonts:
     - family: arcade
       fonts:
-        - asset: assets\font\DePixelBreit.ttf
+        - asset: assets/font/DePixelBreit.ttf
+        
 
-  uses-material-design: true
->>>>>>> main
+ 

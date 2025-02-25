@@ -5,12 +5,6 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-<<<<<<< HEAD
-    return const Center(
-      child: Text(
-        'Profile Page',
-        style: TextStyle(color: Colors.white, fontSize: 24),
-=======
     return Scaffold(
       body: Container(
         width: double.infinity, // Full screen width
@@ -265,7 +259,6 @@ class ProfilePage extends StatelessWidget {
             ),
           ),
         ),
->>>>>>> main
       ),
     );
   }

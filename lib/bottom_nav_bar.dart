@@ -18,25 +18,6 @@ class BottomNavBar extends StatelessWidget {
       backgroundColor: const Color(0xFF0A0C16), // Dark background
       selectedItemColor: const Color(0xFFFFD600), // Selected tab color
       unselectedItemColor: Colors.grey, // Unselected tab color
-<<<<<<< HEAD
-      items: const [
-        BottomNavigationBarItem(
-          icon: Icon(Icons.home),
-          label: '',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.analytics),
-          label: '',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.person),
-          label: '',
-        ),
-      ],
-    );
-  }
-}
-=======
       type: BottomNavigationBarType.fixed,
       items:[
         BottomNavigationBarItem(
@@ -84,4 +65,3 @@ class BottomNavBar extends StatelessWidget {
 
   }
 }     
->>>>>>> main
