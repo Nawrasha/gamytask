@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gamytask_app/main.dart';
 import 'package:gamytask_app/task_manager_screen.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
@@ -27,21 +28,11 @@ class TaskScreen extends StatelessWidget {
             SizedBox(height: 40),
             Row(
               children: [
-                // Bouton de menu à gauche du titre
-                IconButton(
-                  icon: Icon(Icons.dehaze, color: Colors.white), // Icône modifiée
-                  onPressed: () {
-                    // Action pour retourner au menu
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => TaskManagerScreen()),
-  );
-                  },
-                ),
+                
                 Expanded(
                   child: Center(
                     child: Text(
-                      "ALLMYTRSKS",
+                      "ALL MY TASKS",
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 20,
