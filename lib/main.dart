@@ -76,6 +76,7 @@ import 'task_manager_screen.dart'; // Import the TaskManagerScreen
 import 'stats_page.dart'; // Import the StatsPage
 import 'profile_page.dart'; // Import the ProfilePage
 import 'note_page.dart'; // Import the NotePage
+import 'leaderboard_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -116,8 +117,10 @@ class _MainScreenState extends State<MainScreen> {
   final List<Widget> _pages = [
     const TaskManagerScreen(), // Your existing Task Manager screen
     const StatsPage(), // Example: A stats page
-    const NotePage(), // Example: A notes page
+    const LeaderboardPage(),
+    //const NotePage(), // Example: A notes page
     const ProfilePage(), // Example: A profile page
+     
   ];
 
   // Function to handle tab selection
