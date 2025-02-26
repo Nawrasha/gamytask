@@ -29,6 +29,7 @@ flutter:
     - assets/EditSquare.png
     - assets/Folder.png
     - assets/Profile.png
+    - assets/EditCircle.png
 
   uses-material-design: true
 
