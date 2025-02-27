@@ -1,129 +1,6 @@
-/*import 'package:flutter/material.dart';
-
-class LeaderboardPage extends StatelessWidget {
-  const LeaderboardPage({super.key});
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SizedBox(height: 40),
-            // Titre "Leaderboard" centré
-            Text(
-              "Leaderboard",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 30,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: 20),
-            
-            // Ligne avec deux containers (Monthly et All Time)
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // Container pour "Monthly"
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 55, vertical: 14),
-                  decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 215, 201, 66), // Couleur de fond
-                    borderRadius: BorderRadius.circular(20), // Bords arrondis
-                  ),
-                  child: Text(
-                    "Monthly",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                    ),
-                  ),
-                ),
-                // Container pour "All Time"
-                SizedBox(width: 10),
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 55, vertical: 14),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[800], // Couleur de fond
-                    borderRadius: BorderRadius.circular(20), // Bords arrondis
-                  ),
-                  child: Text(
-                    "All Time",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            //SizedBox(height: 5),
-            // Liste des participants
-            Expanded(
-              child: ListView(
-              padding: EdgeInsets.symmetric(vertical: 19.0),               
-              children: [
-                  Padding(
-                    padding: EdgeInsets.only(bottom: 10), // Espace en bas de la Card
-                    child: _buildLeaderboardEntry("St cheikhrouhou", "2,500 points"),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(bottom: 10), // Espace en bas de la Card
-                    child: _buildLeaderboardEntry("ECHEIKHROUHOU", "14.60 points"),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(bottom: 10), // Espace en bas de la Card
-                    child: _buildLeaderboardEntry("LE BOSS ADAM", "1,053 points"),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(bottom: 10), // Espace en bas de la Card
-                    child: _buildLeaderboardEntry("Madame cheikhrouhou", "690 points"),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(bottom: 10), // Espace en bas de la Card
-                    child: _buildLeaderboardEntry("Cheikh", "448 points"),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildLeaderboardEntry(String name, String points) {
-    return Card(
-      color: Colors.grey[900],
-      
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: ListTile(
-        contentPadding: EdgeInsets.symmetric(vertical: 27, horizontal: 16),
-        title: Text(
-          name,
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        trailing: Text(
-          points,
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 18,
-          ),
-        ),
-      ),
-    );
-  }
-}*/
 import 'package:flutter/material.dart';
+import 'bottom_nav_bar.dart'; // Import the custom BottomNavBar
+
 
 class LeaderboardPage extends StatefulWidget {
   const LeaderboardPage({super.key});
@@ -239,6 +116,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
         ),
       ),
     );
+    
   }
 
   
