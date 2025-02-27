@@ -79,7 +79,7 @@ class _NotePageState extends State<NotePage> {
                     MaterialPageRoute(builder: (context) => MainScreen()),
                     );
                   },*/
-                  IconButton(
+                IconButton(
                   icon: Icon(Icons.arrow_back, color: Colors.white),
                   onPressed: () {
                   // Retour à l'écran précédent (TaskManagerScreen)

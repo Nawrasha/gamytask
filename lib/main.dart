@@ -107,11 +107,11 @@ class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
 
   @override
-  _MainScreenState createState() => _MainScreenState();
+  MainScreenState createState() => MainScreenState();
 }
 
-class _MainScreenState extends State<MainScreen> {
-  int _selectedIndex = 0; // Index of the selected tab
+class MainScreenState extends State<MainScreen> {
+  int selectedIndex = 0; // Index of the selected tab
 
   // List of pages to display
   final List<Widget> _pages = [
@@ -128,7 +128,7 @@ class _MainScreenState extends State<MainScreen> {
     setState(() {
       // Ensure index is within valid range (0, 1, 2, 3)
       if (index >= 0 && index < _pages.length) {
-        _selectedIndex = index;
+        selectedIndex = index;
       }
     });
   }
@@ -146,9 +146,9 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF0A0C16), // Dark background for the whole screen
-      body: _pages[_selectedIndex], // Display the selected page
+      body: _pages[selectedIndex], // Display the selected page
       bottomNavigationBar: BottomNavBar(
-        currentIndex: _selectedIndex,
+        currentIndex: selectedIndex,
         onTap: _onItemTapped,
         onAddButtonPressed: _onAddButtonPressed, // Pass the + button action
       ),
