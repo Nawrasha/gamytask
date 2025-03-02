@@ -75,8 +75,8 @@ class BottomNavBar extends StatelessWidget {
           child: GestureDetector(
             onTap: onAddButtonPressed,
             child: Container(
-              width: 60, // Diamètre du cercle
-              height: 60, // Diamètre du cercle
+              width: 55, // Diamètre du cercle
+              height: 55, // Diamètre du cercle
               decoration: BoxDecoration(
                 shape: BoxShape.circle, // Forme circulaire
                 color: Colors.yellow, // Couleur de fond

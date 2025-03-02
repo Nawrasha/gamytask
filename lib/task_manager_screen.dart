@@ -91,24 +91,21 @@ class TaskManagerScreen extends StatelessWidget {
                   title: 'Productivity Mobile App',
                   subtitle: 'Create Detail Booking',
                   status: 'Completed',
-                  time: '2min ago',
-                  color: Colors.green,
+                  color: Color(0xFF00CD06),
                 ),
                 const SizedBox(height: 16),
                 _buildTaskCard(
                   title: 'Banking Mobile App',
                   subtitle: 'Revision Home Page',
-                  status: 'Suspended',
-                  time: '5min ago',
-                  color: Colors.orange,
+                  status: 'To do',
+                  color: Color(0xFFFE0000),
                 ),
                 const SizedBox(height: 16),
                 _buildTaskCard(
                   title: 'Online Course',
                   subtitle: 'Working On Landing Page',
                   status: 'In Progress',
-                  time: '7min ago',
-                  color: Colors.blue,
+                  color: Color(0xFF00CCFF),
                 ),
               ],
             ),
@@ -240,14 +237,13 @@ class TaskManagerScreen extends StatelessWidget {
     required String title,
     required String subtitle,
     required String status,
-    required String time,
     required Color color,
   }) {
     return Card(
       elevation: 4,
       color: Colors.transparent, // Transparent background
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(16),
         side: BorderSide(
           color: Colors.grey, // Grey contour
           width: 2,
@@ -261,53 +257,58 @@ class TaskManagerScreen extends StatelessWidget {
             Text(
               title,
               style: TextStyle(
-                fontFamily: 'arcade',
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
+                fontFamily: 'Poppins', // Police Poppins
+                fontSize: 22, // Taille de police 16
+                fontWeight: FontWeight.bold, // Gras
+                color: Colors.white, // Couleur blanche
+                height: 14 / 16, // Hauteur de ligne 14 (calculée par rapport à la taille de police)
+                letterSpacing: 0.13 * 16, // Espacement des lettres de 13% (0.13 * taille de police)
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 15),
             Text(
               subtitle,
               style: TextStyle(
-                fontFamily: 'arcade',
-                fontSize: 14,
-                color: Colors.grey[400],
+                fontFamily: 'arcade', // Police SkillScreen
+                fontSize: 15, // Taille de police 12
+                fontWeight: FontWeight.normal, // Poids regular (normal)
+                color: const Color(0xFF848A94), // Couleur #848A94 avec opacité 100%
+                height: 12 / 12, // Hauteur de ligne 12 (calculée par rapport à la taille de police)
+                letterSpacing: 0, // Espacement des lettres de 0%
               ),
             ),
             const SizedBox(height: 12),
             Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Colors.grey, // Grey contour
-                      width: 1,
-                    ),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(
-                    status,
-                    style: TextStyle(
-                      fontFamily: 'arcade',
-                      color: color,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                const Spacer(),
-                Text(
-                  time,
-                  style: TextStyle(
-                    fontFamily: 'arcade',
-                    fontSize: 12,
-                    color: Colors.grey[400],
-                  ),
-                ),
-              ],
-            ),
+  children: [
+    Container(
+      width: 100, // Fixed width
+      height: 28, // Fixed height
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8), // Padding
+      decoration: BoxDecoration(
+        color: color, // Dynamic background color (e.g., green for Completed)
+        borderRadius: BorderRadius.circular(16), // Rounded corners
+        border: Border.all(
+          color: color,
+          width: 2, // Border width
+        ),
+      ),
+      child: Center(
+        child: Text(
+          status,
+          style: TextStyle(
+            fontFamily: 'Intel', // Font
+            fontSize: 13, // Font size
+            fontWeight: FontWeight.bold, // Bold text
+            color: Colors.white, // White text
+            height: 17.5 / 12, // Line height
+            letterSpacing: -0.3, // Letter spacing
+          ),
+        ),
+      ),
+    ),
+  ],
+),
+
           ],
         ),
       ),

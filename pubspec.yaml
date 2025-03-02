@@ -29,6 +29,16 @@ flutter:
     - assets/EditSquare.png
     - assets/Folder.png
     - assets/Profile.png
+    - assets/Tick_Square.png
+    - assets/Time_Square.png
+    - assets/Profilen.png
+    - assets/ghost1.png
+    - assets/ghost2.png
+    - assets/ghost3.png
+    - assets/points.png
+    - assets/add.png
+    - assets/EditCircle.png
+
     
 
   uses-material-design: true

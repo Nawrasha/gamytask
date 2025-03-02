@@ -6,260 +6,209 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        width: double.infinity, // Full screen width
-        height: double.infinity, // Full screen height
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Colors.black,
-              Colors.grey.shade900,
-            ],
-          ),
+      appBar: AppBar(
+        title: const Text(
+          'Profile',
+          style: TextStyle(fontSize: 28),
         ),
-        child: SafeArea(
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const SizedBox(height: 10), // Reduced space at the top
-                // Profile Title with Retro Arcade Style
-                const Text(
-                  'PROFILE',
-                  style: TextStyle(
-                    fontSize: 24, // Smaller font size
-                    fontFamily: 'arcade',
-                    color: Colors.yellow,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 2.0,
-                    shadows: [
-                      Shadow(
-                        blurRadius: 10.0,
-                        color: Color.fromRGBO(255, 235, 59, 0.5), // Yellow with 50% opacity
-                        offset: Offset(0, 0),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 10), // Reduced space
-                // Profile Picture with Glow Effect
-                Container(
-                  padding: const EdgeInsets.all(6), // Smaller padding
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.yellow.withOpacity(0.3),
-                        blurRadius: 15, // Smaller glow
-                        spreadRadius: 3, // Smaller glow
-                      ),
-                    ],
-                  ),
-                  child: CircleAvatar(
-                    radius: 50, // Smaller profile image
-                    backgroundImage: NetworkImage(
-                      'https://via.placeholder.com/150', // Replace with the actual image URL
-                    ),
-                    backgroundColor: Colors.transparent,
-                  ),
-                ),
-                const SizedBox(height: 8), // Reduced space
-                // Profile Name and Username
-                const Text(
-                  'Alvart Ainstain',
-                  style: TextStyle(
-                    fontSize: 22, // Smaller font size
-                    fontFamily: 'arcade',
-                    color: Colors.yellow,
-                    fontWeight: FontWeight.bold,
-                    shadows: [
-                      Shadow(
-                        blurRadius: 5.0,
-                        color: Color.fromRGBO(255, 235, 59, 0.5), // Yellow with 50% opacity
-                        offset: Offset(0, 0),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 4), // Reduced space
-                const Text(
-                  '@albart.ainstain',
-                  style: TextStyle(
-                    fontSize: 14, // Smaller font size
-                    fontFamily: 'arcade',
-                    color: Colors.grey,
-                  ),
-                ),
-                const SizedBox(height: 20), // Reduced space
-                // Stats Section with Creative Layout
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      // On Going Tasks
-                      Column(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(10), // Smaller padding
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              gradient: LinearGradient(
-                                colors: [Colors.yellow, Colors.orange],
-                              ),
-                            ),
-                            child: const Icon(
-                              Icons.assignment,
-                              color: Colors.black,
-                              size: 24, // Smaller icon
-                            ),
-                          ),
-                          const SizedBox(height: 8), // Reduced space
-                          const Text(
-                            '5',
-                            style: TextStyle(
-                              fontSize: 20, // Smaller font size
-                              fontFamily: 'arcade',
-                              color: Colors.yellow,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 4), // Reduced space
-                          const Text(
-                            'On Going',
-                            style: TextStyle(
-                              fontSize: 14, // Smaller font size
-                              fontFamily: 'arcade',
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ],
-                      ),
-                      // Completed Tasks
-                      Column(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(10), // Smaller padding
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              gradient: LinearGradient(
-                                colors: [Colors.yellow, Colors.orange],
-                              ),
-                            ),
-                            child: const Icon(
-                              Icons.check_circle,
-                              color: Colors.black,
-                              size: 24, // Smaller icon
-                            ),
-                          ),
-                          const SizedBox(height: 8), // Reduced space
-                          const Text(
-                            '25',
-                            style: TextStyle(
-                              fontSize: 20, // Smaller font size
-                              fontFamily: 'arcade',
-                              color: Colors.yellow,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 4), // Reduced space
-                          const Text(
-                            'Completed',
-                            style: TextStyle(
-                              fontSize: 14, // Smaller font size
-                              fontFamily: 'arcade',
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 20), // Reduced space
-                // Settings and My Task Buttons with Creative Design
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Column(
-                    children: [
-                      // Settings Button
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 12.0, horizontal: 20.0), // Smaller padding
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [Colors.yellow, Colors.orange],
-                          ),
-                          borderRadius: BorderRadius.circular(12), // Smaller border radius
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.yellow.withOpacity(0.3),
-                              blurRadius: 8, // Smaller glow
-                              spreadRadius: 2, // Smaller glow
-                            ),
-                          ],
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: const [
-                            Text(
-                              'SETTINGS',
-                              style: TextStyle(
-                                fontFamily: 'arcade',
-                                color: Colors.black,
-                                fontSize: 16, // Smaller font size
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Icon(Icons.arrow_forward, color: Colors.black, size: 24), // Smaller icon
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 16), // Reduced space
-                      // My Task Button
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 12.0, horizontal: 20.0), // Smaller padding
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [Colors.yellow, Colors.orange],
-                          ),
-                          borderRadius: BorderRadius.circular(12), // Smaller border radius
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.yellow.withOpacity(0.3),
-                              blurRadius: 8, // Smaller glow
-                              spreadRadius: 2, // Smaller glow
-                            ),
-                          ],
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: const [
-                            Text(
-                              'MY TASK',
-                              style: TextStyle(
-                                fontFamily: 'arcade',
-                                color: Colors.black,
-                                fontSize: 16, // Smaller font size
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Icon(Icons.arrow_forward, color: Colors.black, size: 24), // Smaller icon
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 20), // Reduced space
-              ],
+        centerTitle: true,
+        backgroundColor: const Color(0xFF0A0C16),
+      ),
+      body: Stack(
+        children: [
+          // Background ghosts
+          Positioned(
+            top: 120,
+            right: 20,
+            child: Opacity(
+              opacity: 0.5, // Adjust for ghostly effect
+              child: Image.asset(
+                'assets/ghost1.png', // Add this asset to your project
+                width: 40,
+                height: 40,
+              ),
             ),
           ),
-        ),
+          Positioned(
+            top: 150,
+            left: 40,
+            child: Opacity(
+              opacity: 0.5,
+              child: Image.asset(
+                'assets/ghost2.png', // Add this asset to your project
+                width: 35,
+                height: 35,
+              ),
+            ),
+          ),
+          Positioned(
+            top: 20,
+            left: 60,
+            child: Opacity(
+              opacity: 0.5,
+              child: Image.asset(
+                'assets/ghost3.png', // Add this asset to your project
+                width: 35,
+                height: 35,
+              ),
+            ),
+          ),
+          Positioned(
+            top: 0,
+            bottom:500,
+            right:-20,
+            left: 0, // Center the image
+            child: Opacity(
+              opacity: 1,
+              child: Image.asset(
+                'assets/points.png', // Add this asset to your project
+                width: 100,
+                height: 100,
+              ),
+            ),
+          ),
+
+
+          // Main Content
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      // Profile Picture
+                      const CircleAvatar(
+                        radius: 50,
+                        backgroundImage: AssetImage('assets/Profilen.png'),
+                      ),
+                      const SizedBox(height: 16),
+
+                      // User Name
+                      const Text(
+                        'Alvart Alnstein',
+                        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 8),
+
+                      // Username
+                      const Text(
+                        '@goldentalnstein',
+                        style: TextStyle(fontSize: 16, color: Colors.grey),
+                      ),
+                      const SizedBox(height: 24),
+
+                      // Statistics with Vertical Dashed Divider
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          _buildStatistic('5', 'On Going', 'assets/Time_Square.png'),
+                          const SizedBox(width: 15),
+                          SizedBox(
+                            height: 80,
+                            child: CustomPaint(
+                              painter: VerticalDashPainter(),
+                            ),
+                          ),
+                          const SizedBox(width: 15),
+                          _buildStatistic('25', 'Total Done', 'assets/Tick_Square.png'),
+                        ],
+                      ),
+                      const SizedBox(height: 30),
+
+                      // View My Team Button
+                      Container(
+                        padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 20.0),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF0A0C16),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: Colors.white, width: 1),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: const [
+                            Text(
+                              'VIEW MY TEAM',
+                              style: TextStyle(
+                                fontFamily: 'poppins',
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Icon(Icons.arrow_forward, color: Colors.white, size: 24),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 100),
+
+                      // Log Out Button
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16.0),
+                        child: ElevatedButton(
+                          onPressed: () {},
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFFFE0000),
+                            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                          ),
+                          child: const Text(
+                            'Log Out',
+                            style: TextStyle(fontSize: 18, color: Colors.white),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
+
+  // Helper method to build a statistic widget
+  Widget _buildStatistic(String value, String label, String iconPath) {
+    return Column(
+      children: [
+        Image.asset(iconPath, width: 30, height: 30),
+        const SizedBox(height: 1),
+        Text(
+          value,
+          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 0),
+        Text(
+          label,
+          style: const TextStyle(fontSize: 16, color: Colors.grey),
+        ),
+      ],
+    );
+  }
+}
+
+// Custom painter for the vertical dashed line
+class VerticalDashPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint paint = Paint()
+      ..color = Colors.white
+      ..strokeWidth = 1
+      ..style = PaintingStyle.stroke;
+
+    double dashHeight = 5, dashSpace = 3;
+    double startY = 0;
+
+    while (startY < size.height) {
+      canvas.drawLine(Offset(0, startY), Offset(0, startY + dashHeight), paint);
+      startY += dashHeight + dashSpace;
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
