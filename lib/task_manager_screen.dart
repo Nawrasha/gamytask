@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 class TaskManagerScreen extends StatelessWidget {
   const TaskManagerScreen({super.key});
 
-  // Helper function to get today's name
   String getTodaysName() {
     final now = DateTime.now();
     return [
@@ -21,9 +20,7 @@ class TaskManagerScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
-          color: Color(0xFF0A0C16), // Background color: #0A0C16
-        ),
+        color: Colors.black, // Set background to black
         child: SafeArea(
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(16.0),
@@ -35,23 +32,24 @@ class TaskManagerScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      getTodaysName(),
+                      getTodaysName().toUpperCase() +
+                          ", " +
+                          DateTime.now().day.toString(),
                       style: TextStyle(
-                        fontFamily: 'arcade',
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                         shadows: [
                           Shadow(
-                            blurRadius: 10.0,
+                            blurRadius: 4.0,
                             color: Colors.white.withOpacity(0.5),
-                            offset: Offset(0, 0),
+                            offset: const Offset(0, 0),
                           ),
                         ],
                       ),
                     ),
                     IconButton(
-                      icon: Icon(Icons.notifications, color: Colors.white),
+                      icon: const Icon(Icons.notifications, color: Colors.white),
                       onPressed: () {},
                     ),
                   ],
@@ -60,13 +58,9 @@ class TaskManagerScreen extends StatelessWidget {
                 Text(
                   "Let's eat tasks together",
                   style: TextStyle(
-                    fontFamily: 'arcade',
-                    fontSize: 24,
+                    fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    foreground: Paint()
-                      ..shader = LinearGradient(
-                        colors: [Colors.yellow, Colors.orange],
-                      ).createShader(Rect.fromLTWH(0, 0, 200, 70)),
+                    color: Colors.grey[400],
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -77,38 +71,61 @@ class TaskManagerScreen extends StatelessWidget {
                 const SizedBox(height: 20),
 
                 // Task List
-                Text(
-                  "Your Tasks",
-                  style: TextStyle(
-                    fontFamily: 'arcade',
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "My tasks",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {},
+                      child: Text(
+                        "View all",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blue,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 16),
                 _buildTaskCard(
-                  title: 'Productivity Mobile App',
-                  subtitle: 'Create Detail Booking',
+                  title: 'Create Detail Booking',
+                  subtitle: 'Productivity Mobile App',
                   status: 'Completed',
-                  time: '2min ago',
-                  color: Colors.green,
+                  date: '01/03/2025',
+                  color: Color(0xFF00CD06),
                 ),
                 const SizedBox(height: 16),
                 _buildTaskCard(
-                  title: 'Banking Mobile App',
-                  subtitle: 'Revision Home Page',
-                  status: 'Suspended',
-                  time: '5min ago',
-                  color: Colors.orange,
+                  title: 'Revision Home Page',
+                  subtitle: 'Banking Mobile App',
+                  status: 'To do',
+                  date: '01/03/2025',
+                  color: Color(0xFFFE0000),
                 ),
                 const SizedBox(height: 16),
                 _buildTaskCard(
-                  title: 'Online Course',
-                  subtitle: 'Working On Landing Page',
-                  status: 'In Progress',
-                  time: '7min ago',
-                  color: Colors.blue,
+                  title: 'Course Flutter',
+                  subtitle: 'Productivity Mobile App',
+                  status: 'In progress',
+                  date: '01/03/2025',
+                  color: Color(0xFF00CCFF),
+                ),
+                const SizedBox(height: 16),
+                _buildTaskCard(
+                  title: 'Revision Home Page',
+                  subtitle: 'Banking Mobile App',
+                  status: 'Completed',
+                  date: '01/03/2025',
+                  color: Color(0xFF00CD06),
                 ),
               ],
             ),
@@ -121,114 +138,80 @@ class TaskManagerScreen extends StatelessWidget {
   // Widget for the Dashboard
   Widget _buildDashboard() {
     return Container(
+      height: 124,
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        border: Border.all(
-          color: Colors.grey, // Grey contour for the border
-          width: 2,
-        ),
-        borderRadius: BorderRadius.circular(20),
+        color: const Color(0xFFFFD600), // Vibrant yellow
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFFFFD600).withOpacity(0.6), // Glow effect
+            blurRadius: 12,
+            spreadRadius: 8,
+          ),
+        ],
       ),
       child: Row(
         children: [
-          // User Info and Progress
+          CircleAvatar(
+            radius: 20,
+            backgroundColor: Colors.white,
+            child: Text(
+              "1",
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+            ),
+          ),
+          const SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
+                Text(
+                  "Foulen ben foulen",
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Stack(
                   children: [
-                    Icon(Icons.person, size: 30, color: Colors.white),
-                    const SizedBox(width: 8),
-                    Text(
-                      "Flen Ben Foulen",
-                      style: TextStyle(
-                        fontFamily: 'arcade',
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+                    Container(
+                      height: 8,
+                      decoration: BoxDecoration(
                         color: Colors.white,
+                        borderRadius: BorderRadius.circular(8),
                       ),
+                    ),
+                    LayoutBuilder(
+                      builder: (context, constraints) {
+                        return Container(
+                          height: 8,
+                          width: constraints.maxWidth * (126 / 150),
+                          decoration: BoxDecoration(
+                            color: Colors.black,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        );
+                      },
                     ),
                   ],
                 ),
-                const SizedBox(height: 16),
-                LinearProgressIndicator(
-                  value: 12 / 15,
-                  backgroundColor: Colors.grey[800],
-                  color: Colors.yellow,
-                ),
                 const SizedBox(height: 8),
                 Text(
-                  "12/15 tasks done",
+                  "126/150 tasks done",
                   style: TextStyle(
-                    fontFamily: 'arcade',
                     fontSize: 14,
-                    color: Colors.white,
+                    color: Colors.black,
                   ),
                 ),
               ],
             ),
-          ),
-          const SizedBox(width: 16),
-          // Ranking and Points
-          Column(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Colors.grey, // Grey contour
-                    width: 2,
-                  ),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Column(
-                  children: [
-                    Text(
-                      "1st",
-                      style: TextStyle(
-                        fontFamily: 'arcade',
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                    Text(
-                      "Rank",
-                      style: TextStyle(
-                        fontFamily: 'arcade',
-                        fontSize: 12,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 12),
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Colors.grey, // Grey contour
-                    width: 2,
-                  ),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Column(
-                  children: [
-                    Icon(Icons.star, color: Colors.yellow, size: 24),
-                    Text(
-                      "1200",
-                      style: TextStyle(
-                        fontFamily: 'arcade',
-                        fontSize: 14,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
           ),
         ],
       ),
@@ -240,76 +223,67 @@ class TaskManagerScreen extends StatelessWidget {
     required String title,
     required String subtitle,
     required String status,
-    required String time,
+    required String date,
     required Color color,
   }) {
-    return Card(
-      elevation: 4,
-      color: Colors.transparent, // Transparent background
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(
-          color: Colors.grey, // Grey contour
-          width: 2,
-        ),
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.black,
+        borderRadius: BorderRadius.circular(15),
+        border: Border.all(color: Colors.white, width: 1.5),
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              title,
-              style: TextStyle(
-                fontFamily: 'arcade',
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+              fontFamily: 'arcade',
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
             ),
-            const SizedBox(height: 8),
-            Text(
-              subtitle,
-              style: TextStyle(
-                fontFamily: 'arcade',
-                fontSize: 14,
-                color: Colors.grey[400],
-              ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            subtitle,
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.grey[400],
             ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Colors.grey, // Grey contour
-                      width: 1,
-                    ),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(
-                    status,
-                    style: TextStyle(
-                      fontFamily: 'arcade',
-                      color: color,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+          ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Text(
+                date,
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey[400],
                 ),
-                const Spacer(),
-                Text(
-                  time,
+              ),
+              const Spacer(),
+              Container(
+                width: 81, // Fixed width for status
+                padding: const EdgeInsets.symmetric(vertical: 4),
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: color,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  status,
                   style: TextStyle(
-                    fontFamily: 'arcade',
-                    fontSize: 12,
-                    color: Colors.grey[400],
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white, // White text inside
                   ),
                 ),
-              ],
-            ),
-          ],
-        ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
