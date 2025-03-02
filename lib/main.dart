@@ -46,7 +46,7 @@ class _MainScreenState extends State<MainScreen> {
     const StatsPage(), // Example: A stats page
     const NotePage(),
     const ProfilePage(), 
-    
+
   ];
 
   // Function to handle tab selection

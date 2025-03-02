@@ -13,3 +13,4 @@ class StatsPage extends StatelessWidget {
     );
   }
 }
+
