@@ -1,7 +1,82 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
-class TaskManagerScreen extends StatelessWidget {
+// Task model to manage task data
+class Task {
+  String title;
+  String subtitle;
+  String status;
+  String date;
+  Color color;
+
+  Task({
+    required this.title,
+    required this.subtitle,
+    required this.status,
+    required this.date,
+    required this.color,
+  });
+}
+
+class TaskManagerScreen extends StatefulWidget {
   const TaskManagerScreen({super.key});
+
+  @override
+  State<TaskManagerScreen> createState() => _TaskManagerScreenState();
+}
+
+class _TaskManagerScreenState extends State<TaskManagerScreen> {
+  // List of tasks
+  List<Task> tasks = [
+    Task(
+      title: 'Create Detail Booking',
+      subtitle: 'Productivity Mobile App',
+      status: 'Completed',
+      date: '01/03/2025',
+      color: const Color(0xFF00CD06),
+    ),
+    Task(
+      title: 'Revision Home Page',
+      subtitle: 'Banking Mobile App',
+      status: 'To do',
+      date: '01/03/2025',
+      color: const Color(0xFFFE0000),
+    ),
+    Task(
+      title: 'Course Flutter',
+      subtitle: 'Productivity Mobile App',
+      status: 'In progress',
+      date: '01/03/2025',
+      color: const Color(0xFF00CCFF),
+    ),
+    Task(
+      title: 'Revision Home Page',
+      subtitle: 'Banking Mobile App',
+      status: 'Completed',
+      date: '01/03/2025',
+      color: const Color(0xFF00CD06),
+    ),
+  ];
+
+  // Function to cycle through task statuses
+  void _changeTaskStatus(Task task) {
+    setState(() {
+      switch (task.status) {
+        case 'To do':
+          task.status = 'In progress';
+          task.color = const Color(0xFF00CCFF);
+          break;
+        case 'In progress':
+          task.status = 'Completed';
+          task.color = const Color(0xFF00CD06);
+          break;
+        case 'Completed':
+          task.status = 'To do';
+          task.color = const Color(0xFFFE0000);
+          break;
+      }
+    });
+  }
 
   String getTodaysName() {
     final now = DateTime.now();
@@ -20,114 +95,196 @@ class TaskManagerScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        color: Colors.black, // Set background to black
+        color: Colors.black,
         child: SafeArea(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Header
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      getTodaysName().toUpperCase() +
-                          ", " +
-                          DateTime.now().day.toString(),
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        shadows: [
-                          Shadow(
-                            blurRadius: 4.0,
-                            color: Colors.white.withOpacity(0.5),
-                            offset: const Offset(0, 0),
-                          ),
-                        ],
-                      ),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.notifications, color: Colors.white),
-                      onPressed: () {},
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                Text(
-                  "Let's eat tasks together",
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.grey[400],
-                  ),
-                ),
-                const SizedBox(height: 20),
-
-                // Dashboard
-                _buildDashboard(),
-
-                const SizedBox(height: 20),
-
-                // Task List
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "My tasks",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () {},
-                      child: Text(
-                        "View all",
+          child: SlidableAutoCloseBehavior(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Header
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        getTodaysName().toUpperCase() +
+                            ", " +
+                            DateTime.now().day.toString(),
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: 24,
                           fontWeight: FontWeight.bold,
-                          color: Colors.blue,
+                          color: Colors.white,
+                          shadows: [
+                            Shadow(
+                              blurRadius: 4.0,
+                              color: Colors.white.withOpacity(0.5),
+                              offset: const Offset(0, 0),
+                            ),
+                          ],
                         ),
                       ),
+                      IconButton(
+                        icon: const Icon(Icons.notifications, color: Colors.white),
+                        onPressed: () {},
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    "Let's eat tasks together",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey[400],
                     ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                _buildTaskCard(
-                  title: 'Create Detail Booking',
-                  subtitle: 'Productivity Mobile App',
-                  status: 'Completed',
-                  date: '01/03/2025',
-                  color: Color(0xFF00CD06),
-                ),
-                const SizedBox(height: 16),
-                _buildTaskCard(
-                  title: 'Revision Home Page',
-                  subtitle: 'Banking Mobile App',
-                  status: 'To do',
-                  date: '01/03/2025',
-                  color: Color(0xFFFE0000),
-                ),
-                const SizedBox(height: 16),
-                _buildTaskCard(
-                  title: 'Course Flutter',
-                  subtitle: 'Productivity Mobile App',
-                  status: 'In progress',
-                  date: '01/03/2025',
-                  color: Color(0xFF00CCFF),
-                ),
-                const SizedBox(height: 16),
-                _buildTaskCard(
-                  title: 'Revision Home Page',
-                  subtitle: 'Banking Mobile App',
-                  status: 'Completed',
-                  date: '01/03/2025',
-                  color: Color(0xFF00CD06),
-                ),
-              ],
+                  ),
+                  const SizedBox(height: 20),
+
+                  // Dashboard
+                  _buildDashboard(),
+
+                  const SizedBox(height: 20),
+
+                  // Task List
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        "My tasks",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () {},
+                        child: const Text(
+                          "View all",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blue,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  ...tasks.map((task) {
+                    // Get available status options (excluding current status)
+                    List<Map<String, dynamic>> getAvailableStatuses() {
+                      final allStatuses = [
+                        {
+                          'status': 'To do',
+                          'color': const Color(0xFFFE0000),
+                          'icon': Icons.pending_actions,
+                        },
+                        {
+                          'status': 'In progress',
+                          'color': const Color(0xFF00CCFF),
+                          'icon': Icons.trending_up,
+                        },
+                        {
+                          'status': 'Completed',
+                          'color': const Color(0xFF00CD06),
+                          'icon': Icons.check_circle,
+                        },
+                      ];
+                      return allStatuses.where((s) => s['status'] != task.status).toList();
+                    }
+
+                    final availableStatuses = getAvailableStatuses();
+
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 16.0),
+                      child: Slidable(
+                        key: ValueKey(task.title),
+                        startActionPane: ActionPane(
+                          motion: const StretchMotion(),
+                          extentRatio: 0.3,
+                          children: [
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      width: 120,
+                                      height: 40,
+                                      margin: const EdgeInsets.symmetric(vertical: 4),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(20),
+                                        color: availableStatuses[0]['color'],
+                                      ),
+                                      child: CustomSlidableAction(
+                                        onPressed: (context) {
+                                          setState(() {
+                                            task.status = availableStatuses[0]['status'];
+                                            task.color = availableStatuses[0]['color'];
+                                          });
+                                          Slidable.of(context)?.close();
+                                        },
+                                        padding: EdgeInsets.zero,
+                                        backgroundColor: Colors.transparent,
+                                        foregroundColor: Colors.white,
+                                        child: Text(
+                                          availableStatuses[0]['status'],
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      width: 120,
+                                      height: 40,
+                                      margin: const EdgeInsets.symmetric(vertical: 4),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(20),
+                                        color: availableStatuses[1]['color'],
+                                      ),
+                                      child: CustomSlidableAction(
+                                        onPressed: (context) {
+                                          setState(() {
+                                            task.status = availableStatuses[1]['status'];
+                                            task.color = availableStatuses[1]['color'];
+                                          });
+                                          Slidable.of(context)?.close();
+                                        },
+                                        padding: EdgeInsets.zero,
+                                        backgroundColor: Colors.transparent,
+                                        foregroundColor: Colors.white,
+                                        child: Text(
+                                          availableStatuses[1]['status'],
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        child: _buildTaskCard(
+                          title: task.title,
+                          subtitle: task.subtitle,
+                          status: task.status,
+                          date: task.date,
+                          color: task.color,
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                ],
+              ),
             ),
           ),
         ),
@@ -141,11 +298,11 @@ class TaskManagerScreen extends StatelessWidget {
       height: 124,
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFD600), // Vibrant yellow
+        color: const Color(0xFFFFD600),
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFFFFD600).withOpacity(0.6), // Glow effect
+            color: const Color(0xFFFFD600).withOpacity(0.6),
             blurRadius: 12,
             spreadRadius: 8,
           ),
@@ -238,7 +395,7 @@ class TaskManagerScreen extends StatelessWidget {
         children: [
           Text(
             title,
-            style: TextStyle(
+            style: const TextStyle(
               fontFamily: 'arcade',
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -256,16 +413,26 @@ class TaskManagerScreen extends StatelessWidget {
           const SizedBox(height: 12),
           Row(
             children: [
-              Text(
-                date,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey[400],
-                ),
+              Row(
+                children: [
+                  Icon(
+                    Icons.access_time,
+                    size: 16,
+                    color: Colors.grey[400],
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    date,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey[400],
+                    ),
+                  ),
+                ],
               ),
               const Spacer(),
               Container(
-                width: 81, // Fixed width for status
+                width: 81,
                 padding: const EdgeInsets.symmetric(vertical: 4),
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
@@ -274,10 +441,10 @@ class TaskManagerScreen extends StatelessWidget {
                 ),
                 child: Text(
                   status,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white, // White text inside
+                    color: Colors.white,
                   ),
                 ),
               ),

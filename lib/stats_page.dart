@@ -1,308 +1,365 @@
-/*import 'package:flutter/material.dart';
-import 'package:percent_indicator/percent_indicator.dart';
-import 'main.dart';
-
-
-
-
-class StatsPage extends StatelessWidget {
-  const StatsPage({super.key});
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 40),
-            Row(
-              children: [
-                Expanded(
-                  child: Center(
-                    child: Text(
-                      "ALL MY TASKS",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 2,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                StatusIndicator(color: Colors.red, text: "To Do"),
-                StatusIndicator(color: Colors.blue, text: "In Progress"),
-                StatusIndicator(color: Colors.green, text: "Completed"),
-              ],
-            ),
-            SizedBox(height: 40),
-            Center(
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  CircularPercentIndicator(
-                    radius: 120.0,
-                    lineWidth: 24.0,
-                    percent: 1.0,
-                    progressColor: Colors.red,
-                    backgroundColor: Colors.transparent,
-                    circularStrokeCap: CircularStrokeCap.round,
-                    animation: true,
-                    animationDuration: 1200,
-                  ),
-                  CircularPercentIndicator(
-                    radius: 120.0,
-                    lineWidth: 24.0,
-                    percent: (12 + 1) / 15,
-                    progressColor: Colors.blue,
-                    backgroundColor: Colors.transparent,
-                    circularStrokeCap: CircularStrokeCap.round,
-                    animation: true,
-                    animationDuration: 1200,
-                  ),
-                  CircularPercentIndicator(
-                    radius: 120.0,
-                    lineWidth: 24.0,
-                    percent: 12 / 15,
-                    progressColor: Colors.green,
-                    backgroundColor: Colors.transparent,
-                    circularStrokeCap: CircularStrokeCap.round,
-                    animation: true,
-                    animationDuration: 1200,
-                  ),
-                  Text(
-                    "12/15\nCompleted",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.white, fontSize: 16),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text("This month", style: TextStyle(color: Colors.white, fontSize: 18)),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue[900],
-                  ),
-                  onPressed: () {
-                    // Change _selectedIndex à 2 pour afficher LeaderboardPage
-                    MainScreenState? mainScreenState = context.findAncestorStateOfType<MainScreenState>();
-                    if (mainScreenState != null) {
-                      mainScreenState.setState(() {
-                        mainScreenState.selectedIndex = 2; // Index de la LeaderboardPage
-                      });
-                    }
-                  },
-                  child: Text("Leaderboard", style: TextStyle(color: Colors.white)),
-                ),
-              ],
-            ),
-            SizedBox(height: 10),
-            TaskCard(
-              category: "PRODUCTIVITY",
-              title: "Create Detail Booking",
-              status: "Completed",
-              color: Colors.green,
-            ),
-            TaskCard(
-              category: "BANKING MOBILE APP",
-              title: "Revision Home Page",
-              status: "To do",
-              color: Colors.red,
-            ),
-            TaskCard(
-              category: "SKILL",
-              title: "Course flutter",
-              status: "In progress",
-              color: Colors.blue,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class StatusIndicator extends StatelessWidget {
-  final Color color;
-  final String text;
-
-  StatusIndicator ({required this.color, required this.text});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Container(
-          width: 10,
-          height: 10,
-          decoration: BoxDecoration(
-            color: color,
-            shape: BoxShape.circle,
-          ),
-        ),
-        SizedBox(width: 5),
-        Text(
-          text,
-          style: TextStyle(color: Colors.white),
-        ),
-      ],
-    );
-  }
-}
-
-class TaskCard extends StatelessWidget {
-  final String category;
-  final String title;
-  final String status;
-  final Color color;
-
-  TaskCard({required this.category, required this.title, required this.status, required this.color});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      color: Colors.black,
-      shape: RoundedRectangleBorder(
-        side: BorderSide(color: Colors.white54),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: ListTile(
-        title: Text(title, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-        subtitle: Text(category, style: TextStyle(color: Colors.white54)),
-        trailing: Container(
-          padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Text(status, style: TextStyle(color: Colors.white)),
-        ),
-      ),
-    );
-  }
-}*/
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'main.dart';
-class StatsPage extends StatelessWidget {
+
+class StatsPage extends StatefulWidget {
   const StatsPage({super.key});
+
+  @override
+  State<StatsPage> createState() => _StatsPageState();
+}
+
+class _StatsPageState extends State<StatsPage> {
+  // Task data structure
+  List<Map<String, dynamic>> tasks = [
+    {
+      'title': 'Create Detail Booking',
+      'subtitle': 'PRODUCTIVITY',
+      'status': 'Completed',
+      'color': const Color(0xFF00CD06),
+    },
+    {
+      'title': 'Revision Home Page',
+      'subtitle': 'BANKING MOBILE APP',
+      'status': 'To do',
+      'color': const Color(0xFFFE0000),
+    },
+    {
+      'title': 'Course Flutter',
+      'subtitle': 'SKILL',
+      'status': 'In progress',
+      'color': const Color(0xFF00CCFF),
+    },
+  ];
+
+  void _updateTaskStatus(int index, String newStatus) {
+    setState(() {
+      tasks[index]['status'] = newStatus;
+      switch (newStatus) {
+        case 'To do':
+          tasks[index]['color'] = const Color(0xFFFE0000);
+          break;
+        case 'In progress':
+          tasks[index]['color'] = const Color(0xFF00CCFF);
+          break;
+        case 'Completed':
+          tasks[index]['color'] = const Color(0xFF00CD06);
+          break;
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 40),
-            Row(
-              children: [
-                Expanded(
-                  child: Center(
-                    child: Text(
-                      "ALL MY TASKS",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 2,
+      body: SafeArea(
+        child: SlidableAutoCloseBehavior(
+          child: ListView(
+            padding: const EdgeInsets.all(16.0),
+            physics: const BouncingScrollPhysics(),
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Center(
+                      child: Text(
+                        "ALL MY TASKS",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 2,
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
-            ),
-            SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                StatusIndicator(color: Colors.red, text: "To Do"),
-                StatusIndicator(color: Colors.blue, text: "In Progress"),
-                StatusIndicator(color: Colors.green, text: "Completed"),
-              ],
-            ),
-            SizedBox(height: 40),
-            Center(
-              child: Stack(
-                alignment: Alignment.center,
+                ],
+              ),
+              SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  CircularPercentIndicator(
-                    radius: 120.0,
-                    lineWidth: 24.0,
-                    percent: 1.0,
-                    progressColor: Colors.red,
-                    backgroundColor: Colors.transparent,
-                    circularStrokeCap: CircularStrokeCap.round,
-                    animation: true,
-                    animationDuration: 1200,
-                  ),
-                  CircularPercentIndicator(
-                    radius: 120.0,
-                    lineWidth: 24.0,
-                    percent: (12 + 1) / 15,
-                    progressColor: Colors.blue,
-                    backgroundColor: Colors.transparent,
-                    circularStrokeCap: CircularStrokeCap.round,
-                    animation: true,
-                    animationDuration: 1200,
-                  ),
-                  CircularPercentIndicator(
-                    radius: 120.0,
-                    lineWidth: 24.0,
-                    percent: 12 / 15,
-                    progressColor: Colors.green,
-                    backgroundColor: Colors.transparent,
-                    circularStrokeCap: CircularStrokeCap.round,
-                    animation: true,
-                    animationDuration: 1200,
-                  ),
+                  StatusIndicator(color: const Color(0xFFFE0000), text: "To Do"),
+                  StatusIndicator(color: const Color(0xFF00CCFF), text: "In Progress"),
+                  StatusIndicator(color: const Color(0xFF00CD06), text: "Completed"),
+                ],
+              ),
+              SizedBox(height: 40),
+              Center(
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    CircularPercentIndicator(
+                      radius: 120.0,
+                      lineWidth: 24.0,
+                      percent: 1.0,
+                      progressColor: const Color(0xFFFE0000),
+                      backgroundColor: Colors.transparent,
+                      circularStrokeCap: CircularStrokeCap.round,
+                      animation: true,
+                      animationDuration: 1200,
+                    ),
+                    CircularPercentIndicator(
+                      radius: 120.0,
+                      lineWidth: 24.0,
+                      percent: (tasks.where((t) => t['status'] == 'In progress').length + 
+                              tasks.where((t) => t['status'] == 'Completed').length) / tasks.length,
+                      progressColor: const Color(0xFF00CCFF),
+                      backgroundColor: Colors.transparent,
+                      circularStrokeCap: CircularStrokeCap.round,
+                      animation: true,
+                      animationDuration: 1200,
+                    ),
+                    CircularPercentIndicator(
+                      radius: 120.0,
+                      lineWidth: 24.0,
+                      percent: tasks.where((t) => t['status'] == 'Completed').length / tasks.length,
+                      progressColor: const Color(0xFF00CD06),
+                      backgroundColor: Colors.transparent,
+                      circularStrokeCap: CircularStrokeCap.round,
+                      animation: true,
+                      animationDuration: 1200,
+                    ),
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          "${tasks.where((t) => t['status'] == 'Completed').length}/${tasks.length}",
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const Text(
+                          "Completed",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
                   Text(
-                    "12/15\nCompleted",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.white, fontSize: 16),
+                    "This month",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF00CCFF),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
+                    onPressed: () {
+                      MainScreenState? mainScreenState = context.findAncestorStateOfType<MainScreenState>();
+                      if (mainScreenState != null) {
+                        mainScreenState.setState(() {
+                          mainScreenState.selectedIndex = 2;
+                        });
+                      }
+                    },
+                    child: const Text(
+                      "Leaderboard",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ],
               ),
-            ),
-            SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text("This month", style: TextStyle(color: Colors.white, fontSize: 18)),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue[900],
-                  ),
-                  onPressed: () {
-                    MainScreenState? mainScreenState = context.findAncestorStateOfType<MainScreenState>();
-                    if (mainScreenState != null) {
-                      mainScreenState.setState(() {
-                        mainScreenState.selectedIndex = 2;
-                      });
-                    }
-                  },
-                  child: Text("Leaderboard", style: TextStyle(color: Colors.white)),
+              SizedBox(height: 20),
+              ...tasks.asMap().entries.map((entry) {
+                final index = entry.key;
+                final task = entry.value;
+                return _buildTaskItem(
+                  index,
+                  task['title'],
+                  task['subtitle'],
+                  task['status'],
+                  task['color'],
+                );
+              }).toList(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTaskItem(int index, String title, String subtitle, String status, Color color) {
+    List<Map<String, dynamic>> getAvailableStatuses() {
+      final allStatuses = [
+        {
+          'status': 'To do',
+          'color': const Color(0xFFFE0000),
+        },
+        {
+          'status': 'In progress',
+          'color': const Color(0xFF00CCFF),
+        },
+        {
+          'status': 'Completed',
+          'color': const Color(0xFF00CD06),
+        },
+      ];
+      return allStatuses.where((s) => s['status'] != status).toList();
+    }
+
+    final availableStatuses = getAvailableStatuses();
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16.0),
+      child: Slidable(
+        startActionPane: ActionPane(
+          motion: const StretchMotion(),
+          extentRatio: 0.3,
+          children: [
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: 120,
+                      height: 40,
+                      margin: const EdgeInsets.symmetric(vertical: 4),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: availableStatuses[0]['color'],
+                      ),
+                      child: CustomSlidableAction(
+                        onPressed: (context) {
+                          _updateTaskStatus(index, availableStatuses[0]['status']);
+                          Slidable.of(context)?.close();
+                        },
+                        padding: EdgeInsets.zero,
+                        backgroundColor: Colors.transparent,
+                        foregroundColor: Colors.white,
+                        child: Text(
+                          availableStatuses[0]['status'],
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      width: 120,
+                      height: 40,
+                      margin: const EdgeInsets.symmetric(vertical: 4),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: availableStatuses[1]['color'],
+                      ),
+                      child: CustomSlidableAction(
+                        onPressed: (context) {
+                          _updateTaskStatus(index, availableStatuses[1]['status']);
+                          Slidable.of(context)?.close();
+                        },
+                        padding: EdgeInsets.zero,
+                        backgroundColor: Colors.transparent,
+                        foregroundColor: Colors.white,
+                        child: Text(
+                          availableStatuses[1]['status'],
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
-            SizedBox(height: 10),
-            TaskCard(category: "PRODUCTIVITY", title: "Create Detail Booking", initialColor: Colors.green),
-            TaskCard(category: "BANKING MOBILE APP", title: "Revision Home Page", initialColor: Colors.red),
-            TaskCard(category: "SKILL", title: "Course flutter", initialColor: Colors.blue),
           ],
+        ),
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.black,
+            borderRadius: BorderRadius.circular(15),
+            border: Border.all(color: Colors.white, width: 1.5),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: const TextStyle(
+                  fontFamily: 'arcade',
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                subtitle,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey[400],
+                ),
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.access_time,
+                        size: 16,
+                        color: Colors.grey[400],
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        "01/03/2025",
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey[400],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const Spacer(),
+                  Container(
+                    width: 81,
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: color,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      status,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -333,87 +390,6 @@ class StatusIndicator extends StatelessWidget {
           style: TextStyle(color: Colors.white),
         ),
       ],
-    );
-  }
-}
-
-class TaskCard extends StatefulWidget {
-  final String category;
-  final String title;
-  final Color initialColor;
-
-  TaskCard({required this.category, required this.title, required this.initialColor});
-
-  @override
-  _TaskCardState createState() => _TaskCardState();
-}
-
-class _TaskCardState extends State<TaskCard> {
-  late Color _taskColor;
-  bool _showOptions = false;
-  final List<Color> _colors = [Colors.red, Colors.blue, Colors.green];
-  double _offset = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    _taskColor = widget.initialColor;
-  }
-
-  void _changeColor(Color color) {
-    setState(() {
-      _taskColor = color;
-      _showOptions = false;
-      _offset = 0;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          _showOptions = !_showOptions;
-          _offset = _showOptions ? 50 : 0;
-        });
-      },
-      child: Stack(
-        children: [
-          ClipRect(
-            child: Transform.translate(
-              offset: Offset(_offset, 0),
-              child: Card(
-                color: Colors.black,
-                shape: RoundedRectangleBorder(
-                  side: BorderSide(color: Colors.white54),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: ListTile(
-                  title: Text(widget.title, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                  subtitle: Text(widget.category, style: TextStyle(color: Colors.white54)),
-                  trailing: Icon(Icons.circle, color: _taskColor, size: 30),
-                ),
-              ),
-            ),
-          ),
-          if (_showOptions)
-            Positioned(
-              left: 0,
-              top: 0,
-              bottom: 0,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: _colors
-                    .where((color) => color != _taskColor)
-                    .map((color) => IconButton(
-                          icon: Icon(Icons.circle, color: color, size: 30),
-                          onPressed: () => _changeColor(color),
-                        ))
-                    .toList(),
-              ),
-            ),
-        ],
-      ),
     );
   }
 }

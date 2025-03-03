@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 class BottomNavBar extends StatelessWidget {
@@ -19,6 +18,7 @@ class BottomNavBar extends StatelessWidget {
       children: [
         // BottomNavigationBar avec 4 éléments
         BottomAppBar(
+          height: 65,
           color: const Color(0xFF0A0C16), // Couleur de fond de la barre
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -27,8 +27,8 @@ class BottomNavBar extends StatelessWidget {
               IconButton(
                 icon: Image.asset(
                   'assets/Home.png',
-                  width: 30,
-                  height: 30,
+                  width: 24,
+                  height: 24,
                   color: currentIndex == 0 ? Colors.yellow : Colors.grey,
                 ),
                 onPressed: () => onTap(0),
@@ -37,20 +37,20 @@ class BottomNavBar extends StatelessWidget {
               IconButton(
                 icon: Image.asset(
                   'assets/Folder.png',
-                  width: 30,
-                  height: 30,
+                  width: 24,
+                  height: 24,
                   color: currentIndex == 1 ? Colors.yellow : Colors.grey,
                 ),
                 onPressed: () => onTap(1),
               ),
               // Espace vide pour le bouton + (centré)
-              SizedBox(width: 60), // Largeur du bouton +
+              const SizedBox(width: 60), // Largeur du bouton +
               // Icône EditSquare
               IconButton(
                 icon: Image.asset(
                   'assets/EditSquare.png',
-                  width: 30,
-                  height: 30,
+                  width: 24,
+                  height: 24,
                   color: currentIndex == 2 ? Colors.yellow : Colors.grey,
                 ),
                 onPressed: () => onTap(2),
@@ -59,8 +59,8 @@ class BottomNavBar extends StatelessWidget {
               IconButton(
                 icon: Image.asset(
                   'assets/Profile.png',
-                  width: 30,
-                  height: 30,
+                  width: 24,
+                  height: 24,
                   color: currentIndex == 3 ? Colors.yellow : Colors.grey,
                 ),
                 onPressed: () => onTap(3),
@@ -71,30 +71,34 @@ class BottomNavBar extends StatelessWidget {
         // Bouton + au centre
         Positioned(
           left: MediaQuery.of(context).size.width / 2 - 30, // Centrer le bouton
-          bottom: 20, // Ajuster la position verticale
+          bottom: 25, // Position plus haute
           child: GestureDetector(
             onTap: onAddButtonPressed,
             child: Container(
-              width: 60, // Diamètre du cercle
-              height: 60, // Diamètre du cercle
+              width: 60,
+              height: 60,
               decoration: BoxDecoration(
-                shape: BoxShape.circle, // Forme circulaire
-                color: Colors.yellow, // Couleur de fond
+                shape: BoxShape.circle,
+                color: Colors.yellow,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.3), // Ombre
-                    spreadRadius: 2,
-                    blurRadius: 5,
-                    offset: Offset(0, 3), // Position de l'ombre
+                    color: Colors.yellow.withOpacity(0.3),
+                    spreadRadius: 4,
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                  BoxShadow(
+                    color: Colors.white.withOpacity(0.2),
+                    spreadRadius: 1,
+                    blurRadius: 4,
+                    offset: const Offset(0, -1),
                   ),
                 ],
               ),
-              child: Center(
-                child: Icon(
-                  Icons.add,
-                  color: Colors.white, // Couleur de l'icône +
-                  size: 30, // Taille de l'icône
-                ),
+              child: const Icon(
+                Icons.add,
+                color: Colors.white,
+                size: 30,
               ),
             ),
           ),
