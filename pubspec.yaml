@@ -42,7 +42,7 @@ flutter:
     - assets/goldmedal.png
     - assets/argentmedal.png
     - assets/bronzemedal.png
-
+    - assets/Prize.png
   uses-material-design: true
 
   fonts:

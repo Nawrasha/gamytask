@@ -44,13 +44,13 @@ class BottomNavBar extends StatelessWidget {
                 onPressed: () => onTap(1),
               ),
               // Espace vide pour le bouton + (centré)
-              const SizedBox(width: 60), // Largeur du bouton +
+              const SizedBox(width: 60),// Largeur du bouton +
               // Icône EditSquare
               IconButton(
                 icon: Image.asset(
-                  'assets/EditSquare.png',
-                  width: 24,
-                  height: 24,
+                  'assets/Prize.png',
+                  width: 60,
+                  height: 60,
                   color: currentIndex == 2 ? Colors.yellow : Colors.grey,
                 ),
                 onPressed: () => onTap(2),
