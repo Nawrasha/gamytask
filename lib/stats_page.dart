@@ -33,22 +33,117 @@ class _StatsPageState extends State<StatsPage> {
     },
   ];
 
-  void _updateTaskStatus(int index, String newStatus) {
-    setState(() {
-      tasks[index]['status'] = newStatus;
-      switch (newStatus) {
-        case 'To do':
-          tasks[index]['color'] = const Color(0xFFFE0000);
-          break;
-        case 'In progress':
-          tasks[index]['color'] = const Color(0xFF00CCFF);
-          break;
-        case 'Completed':
-          tasks[index]['color'] = const Color(0xFF00CD06);
-          break;
-      }
-    });
-  }
+void _updateTaskStatus(int index, String newStatus) {
+  setState(() {
+    tasks[index]['status'] = newStatus;
+    switch (newStatus) {
+      case 'To do':
+        tasks[index]['color'] = const Color(0xFFFE0000);
+        break;
+      case 'In progress':
+        tasks[index]['color'] = const Color(0xFF00CCFF);
+        break;
+      case 'Completed':
+        tasks[index]['color'] = const Color(0xFF00CD06);
+        // Show the popup if the status is set to 'Completed'
+        _showCompletedPopup(context);
+        break;
+    }
+  });
+}
+
+// Method to show a popup when the status is completed
+void _showCompletedPopup(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24.0), // Set corner radius to 24
+        ),
+        child: Container(
+          width: 340,
+          height:360,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(24.0), // Set corner radius to 24
+          ),
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              // Reduced space between image and top of popup
+             // Small space between the top and the image
+              Image.asset(
+                'assets/popup.png', // Ensure you have this image in assets
+                width: 320, // New width
+                height: 170,
+                fit: BoxFit.cover,
+              ),
+              // Task completed text and Great Job text
+              SizedBox(height:5),
+              Column(
+                children: [
+                  Text(
+                    'Task Completed',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 24, // Bold and font size 20
+                      color: Color(0xFF182035), // Color for "Task Completed"
+                    ),
+                  ),
+                
+                  Text(
+                    'Great Job!',
+                    style: TextStyle(
+                      fontSize: 18,  // Font size 16
+                      fontWeight: FontWeight.w500, // Medium weight
+                      color: Color(0xFF606268), // Color for "Great Job!"
+                    ),
+                    textAlign: TextAlign.center, // Center align the text
+                  ),
+              
+                  Text(
+                    'You received 1 point.',
+                    style: TextStyle(
+                      fontSize: 18,  // Font size 16
+                      fontWeight: FontWeight.w500, // Medium weight
+                      color: Color(0xFF606268), // Color for "You received 1 point."
+                    ),
+                    textAlign: TextAlign.center, // Center align the text
+                  ),
+                ],
+              ),
+              SizedBox(height:5),
+              // Continue Button with white text
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFFFAD107), // Color for the button
+                  minimumSize: Size(200, 50), // Adjust the size of the button
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25),
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close the dialog
+                },
+                child: const Text(
+                  'Continue',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white, // White color for text in the button
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
+
 
   @override
   Widget build(BuildContext context) {

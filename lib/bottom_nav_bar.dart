@@ -75,8 +75,8 @@ class BottomNavBar extends StatelessWidget {
           child: GestureDetector(
             onTap: onAddButtonPressed,
             child: Container(
-              width: 60,
-              height: 60,
+              width: 50,
+              height:50,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: Colors.yellow,

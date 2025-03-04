@@ -58,26 +58,6 @@ class _TaskManagerScreenState extends State<TaskManagerScreen> {
     ),
   ];
 
-  // Function to cycle through task statuses
-  void _changeTaskStatus(Task task) {
-    setState(() {
-      switch (task.status) {
-        case 'To do':
-          task.status = 'In progress';
-          task.color = const Color(0xFF00CCFF);
-          break;
-        case 'In progress':
-          task.status = 'Completed';
-          task.color = const Color(0xFF00CD06);
-          break;
-        case 'Completed':
-          task.status = 'To do';
-          task.color = const Color(0xFFFE0000);
-          break;
-      }
-    });
-  }
-
   String getTodaysName() {
     final now = DateTime.now();
     return [
@@ -90,6 +70,98 @@ class _TaskManagerScreenState extends State<TaskManagerScreen> {
       'Sunday'
     ][now.weekday - 1];
   }
+
+  // Function to show the dialog when task is completed
+  void _showCompletedPopup(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24.0), // Set corner radius to 24
+        ),
+        child: Container(
+          width: 340,
+          height:360,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(24.0), // Set corner radius to 24
+          ),
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              // Reduced space between image and top of popup
+             // Small space between the top and the image
+              Image.asset(
+                'assets/popup.png', // Ensure you have this image in assets
+                width: 320, // New width
+                height: 170,
+                fit: BoxFit.cover,
+              ),
+              // Task completed text and Great Job text
+              SizedBox(height:5),
+              Column(
+                children: [
+                  Text(
+                    'Task Completed',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 24, // Bold and font size 20
+                      color: Color(0xFF182035), // Color for "Task Completed"
+                    ),
+                  ),
+                
+                  Text(
+                    'Great Job!',
+                    style: TextStyle(
+                      fontSize: 18,  // Font size 16
+                      fontWeight: FontWeight.w500, // Medium weight
+                      color: Color(0xFF606268), // Color for "Great Job!"
+                    ),
+                    textAlign: TextAlign.center, // Center align the text
+                  ),
+              
+                  Text(
+                    'You received 1 point.',
+                    style: TextStyle(
+                      fontSize: 18,  // Font size 16
+                      fontWeight: FontWeight.w500, // Medium weight
+                      color: Color(0xFF606268), // Color for "You received 1 point."
+                    ),
+                    textAlign: TextAlign.center, // Center align the text
+                  ),
+                ],
+              ),
+              SizedBox(height:5),
+              // Continue Button with white text
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFFFAD107), // Color for the button
+                  minimumSize: Size(200, 50), // Adjust the size of the button
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25),
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close the dialog
+                },
+                child: const Text(
+                  'Continue',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white, // White color for text in the button
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
 
   @override
   Widget build(BuildContext context) {
@@ -109,7 +181,7 @@ class _TaskManagerScreenState extends State<TaskManagerScreen> {
                     children: [
                       Text(
                         getTodaysName().toUpperCase() +
-                            ", " +
+ ", " +
                             DateTime.now().day.toString(),
                         style: TextStyle(
                           fontSize: 24,
@@ -118,6 +190,7 @@ class _TaskManagerScreenState extends State<TaskManagerScreen> {
                           shadows: [
                             Shadow(
                               blurRadius: 4.0,
+                              // ignore: deprecated_member_use
                               color: Colors.white.withOpacity(0.5),
                               offset: const Offset(0, 0),
                             ),
@@ -225,6 +298,12 @@ class _TaskManagerScreenState extends State<TaskManagerScreen> {
                                             task.status = availableStatuses[0]['status'];
                                             task.color = availableStatuses[0]['color'];
                                           });
+
+                                          if (task.status == 'Completed') {
+                                            _showCompletedPopup(context);
+                                            // Show dialog when task is marked as completed
+                                          }
+
                                           Slidable.of(context)?.close();
                                         },
                                         padding: EdgeInsets.zero,
@@ -253,6 +332,10 @@ class _TaskManagerScreenState extends State<TaskManagerScreen> {
                                             task.status = availableStatuses[1]['status'];
                                             task.color = availableStatuses[1]['color'];
                                           });
+                                           if (task.status == 'Completed') {
+                                           _showCompletedPopup(context);
+                                            // Show dialog when task is marked as completed
+                                          }
                                           Slidable.of(context)?.close();
                                         },
                                         padding: EdgeInsets.zero,
@@ -282,7 +365,7 @@ class _TaskManagerScreenState extends State<TaskManagerScreen> {
                         ),
                       ),
                     );
-                  }).toList(),
+                  }),
                 ],
               ),
             ),
