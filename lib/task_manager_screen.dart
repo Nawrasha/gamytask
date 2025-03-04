@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'TaskCard.dart';
+import 'main.dart';
 
 class TaskManagerScreen extends StatelessWidget {
   const TaskManagerScreen({super.key});
@@ -22,7 +24,7 @@ class TaskManagerScreen extends StatelessWidget {
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
-          color: Color(0xFF0A0C16), // Background color: #0A0C16
+          color: Color.fromARGB(255, 0, 0, 0), // Background color: #0A0C16
         ),
         child: SafeArea(
           child: SingleChildScrollView(
@@ -34,25 +36,25 @@ class TaskManagerScreen extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      getTodaysName(),
-                      style: TextStyle(
-                        fontFamily: 'arcade',
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        shadows: [
-                          Shadow(
-                            blurRadius: 10.0,
-                            color: Colors.white.withOpacity(0.5),
-                            offset: Offset(0, 0),
+                    Expanded(
+                      child:Center(
+                        child:Text(
+                          getTodaysName(),
+                          style: TextStyle(
+                            fontFamily: 'arcade',
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            shadows: [
+                              Shadow(
+                                blurRadius: 10.0,
+                                color: Colors.white.withOpacity(0.5),
+                                offset: Offset(0, 0),
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.notifications, color: Colors.white),
-                      onPressed: () {},
                     ),
                   ],
                 ),
@@ -77,39 +79,30 @@ class TaskManagerScreen extends StatelessWidget {
                 const SizedBox(height: 20),
 
                 // Task List
-                Text(
-                  "Your Tasks",
-                  style: TextStyle(
-                    fontFamily: 'arcade',
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text("This month", style: TextStyle(color: Colors.white, fontSize: 18)),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue[900],
+                    ),
+                    onPressed: () {
+                      MainScreenState? mainScreenState = context.findAncestorStateOfType<MainScreenState>();
+                      if (mainScreenState != null) {
+                        mainScreenState.setState(() {
+                          mainScreenState.selectedIndex = 1;
+                        });
+                      }
+                    },
+                    child: Text("viw all", style: TextStyle(color: Colors.white)),
                   ),
-                ),
-                const SizedBox(height: 16),
-                _buildTaskCard(
-                  title: 'Productivity Mobile App',
-                  subtitle: 'Create Detail Booking',
-                  status: 'Completed',
-                  time: '2min ago',
-                  color: Colors.green,
-                ),
-                const SizedBox(height: 16),
-                _buildTaskCard(
-                  title: 'Banking Mobile App',
-                  subtitle: 'Revision Home Page',
-                  status: 'Suspended',
-                  time: '5min ago',
-                  color: Colors.orange,
-                ),
-                const SizedBox(height: 16),
-                _buildTaskCard(
-                  title: 'Online Course',
-                  subtitle: 'Working On Landing Page',
-                  status: 'In Progress',
-                  time: '7min ago',
-                  color: Colors.blue,
-                ),
+                ],
+              ),
+                SizedBox(height: 10),
+                TaskCard(category: "PRODUCTIVITY", title: "Create Detail Booking", initialColor: Colors.green),
+                TaskCard(category: "BANKING MOBILE APP", title: "Revision Home Page", initialColor: Colors.red),
+                TaskCard(category: "SKILL", title: "Course flutter", initialColor: Colors.blue),
               ],
             ),
           ),
@@ -119,7 +112,7 @@ class TaskManagerScreen extends StatelessWidget {
   }
 
   // Widget for the Dashboard
-  Widget _buildDashboard() {
+  /*Widget _buildDashboard() {
     return Container(
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
@@ -234,83 +227,68 @@ class TaskManagerScreen extends StatelessWidget {
       ),
     );
   }
-
-  // Widget for a Task Card
-  Widget _buildTaskCard({
-    required String title,
-    required String subtitle,
-    required String status,
-    required String time,
-    required Color color,
-  }) {
-    return Card(
-      elevation: 4,
-      color: Colors.transparent, // Transparent background
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(
-          color: Colors.grey, // Grey contour
+}*/
+Widget _buildDashboard() {
+    return Container(
+      padding: const EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: Colors.grey, // Grey contour for the border
           width: 2,
         ),
+        borderRadius: BorderRadius.circular(20),
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              title,
-              style: TextStyle(
-                fontFamily: 'arcade',
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              subtitle,
-              style: TextStyle(
-                fontFamily: 'arcade',
-                fontSize: 14,
-                color: Colors.grey[400],
-              ),
-            ),
-            const SizedBox(height: 12),
-            Row(
+      child: Column(
+        children: [
+          // User Info and Progress
+          Expanded(
+            child:Row(
               children: [
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  width: 20,
+                  height: 20,
                   decoration: BoxDecoration(
+                    color: const Color.fromARGB(255, 0, 0, 0), // Couleur de fond de l'icône
+                    shape: BoxShape.circle, // Forme circulaire
                     border: Border.all(
-                      color: Colors.grey, // Grey contour
+                      color: Colors.white, // Couleur de la bordure
                       width: 1,
                     ),
-                    borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Text(
-                    status,
-                    style: TextStyle(
-                      fontFamily: 'arcade',
-                      color: color,
-                      fontWeight: FontWeight.bold,
+                  child: Center(
+                    child: Text(
+                      '1',
+                      style: TextStyle(
+                        color: const Color.fromARGB(255, 255, 255, 255),
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
-                const Spacer(),
                 Text(
-                  time,
+                  "Flen Ben Foulen",
                   style: TextStyle(
                     fontFamily: 'arcade',
-                    fontSize: 12,
-                    color: Colors.grey[400],
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
                   ),
                 ),
               ],
             ),
-          ],
-        ),
+          ),
+          const SizedBox(height: 16),
+                LinearProgressIndicator(
+                  value: 12 / 15,
+                  backgroundColor: Colors.grey[800],
+                  color: Colors.yellow,
+                ),
+        ],
       ),
     );
   }
 }
+
+  
+
