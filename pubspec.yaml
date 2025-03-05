@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 name: gamytask_app
 description: "A new Flutter project."
 
@@ -52,4 +53,60 @@ flutter:
         - asset: assets/font/DePixelBreit.ttf
         
 
+=======
+name: gamytask_app
+description: "A new Flutter project."
+
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.7.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+  flutter_gif: 0.0.4
+  percent_indicator: ^4.2.2
+  flutter_slidable: ^4.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^5.0.0
+
+flutter:
+  assets:
+    - assets/loading.gif
+    - assets/Home.png
+    - assets/EditSquare.png
+    - assets/Folder.png
+    - assets/Profile.png
+    - assets/ghost1.png
+    - assets/ghost2.png
+    - assets/ghost3.png
+    - assets/points.png
+    - assets/Profilen.PNG
+    - assets/Time_Square.png
+    - assets/Tick_Square.png
+    - assets/EditCircle.png
+    - assets/laderboardimg.png
+    - assets/goldmedal.png
+    - assets/argentmedal.png
+    - assets/bronzemedal.png
+    - assets/Prize.png
+    - assets/popup.png
+  uses-material-design: true
+
+  fonts:
+    - family: arcade
+      fonts:
+        - asset: assets/font/DePixelBreit.ttf
+        
+
+>>>>>>> ba228d9a8b69984b9e8d8e6b4d1abce5fab97d1a
  
