@@ -366,142 +366,155 @@ class _StatsPageState extends State<StatsPage> {
     }
 
     final availableStatuses = getAvailableStatuses();
+    final isCompleted = status.toLowerCase() == 'completed';
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 16.0),
-      child: Slidable(
-        startActionPane: ActionPane(
-          motion: const StretchMotion(),
-          extentRatio: 0.3,
-          children: [
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    if (availableStatuses.length > 0) Container(
-                      width: 120,
-                      height: 40,
-                      margin: const EdgeInsets.symmetric(vertical: 4),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: availableStatuses[0]['color'],
-                      ),
-                      child: CustomSlidableAction(
-                        onPressed: (context) async {
-                          await _updateTaskStatus(
-                            taskId,
-                            availableStatuses[0]['status'],
-                          );
-                          Slidable.of(context)?.close();
-                        },
-                        padding: EdgeInsets.zero,
-                        backgroundColor: Colors.transparent,
-                        foregroundColor: Colors.white,
-                        child: Text(
-                          availableStatuses[0]['display'],
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                    if (availableStatuses.length > 1) Container(
-                      width: 120,
-                      height: 40,
-                      margin: const EdgeInsets.symmetric(vertical: 4),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: availableStatuses[1]['color'],
-                      ),
-                      child: CustomSlidableAction(
-                        onPressed: (context) async {
-                          await _updateTaskStatus(
-                            taskId,
-                            availableStatuses[1]['status'],
-                          );
-                          Slidable.of(context)?.close();
-                        },
-                        padding: EdgeInsets.zero,
-                        backgroundColor: Colors.transparent,
-                        foregroundColor: Colors.white,
-                        child: Text(
-                          availableStatuses[1]['display'],
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-        child: Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Colors.black,
-            borderRadius: BorderRadius.circular(15),
-            border: Border.all(color: Colors.white, width: 1.5),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: const TextStyle(
-                  fontFamily: 'arcade',
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                description,
-                style: TextStyle(fontSize: 14, color: Colors.grey[400]),
-              ),
-              const SizedBox(height: 12),
-              Row(
+      child: isCompleted 
+          ? _buildTaskContainer(title, description, status, color, deadline)
+          : Slidable(
+              startActionPane: ActionPane(
+                motion: const StretchMotion(),
+                extentRatio: 0.3,
                 children: [
-                  Row(
-                    children: [
-                      Icon(Icons.access_time, size: 16, color: Colors.grey[400]),
-                      const SizedBox(width: 4),
-                      Text(
-                        deadline,
-                        style: TextStyle(fontSize: 12, color: Colors.grey[400]),
-                      ),
-                    ],
-                  ),
-                  const Spacer(),
-                  Container(
-                    width: 81,
-                    padding: const EdgeInsets.symmetric(vertical: 4),
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: color,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Text(
-                      status,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          if (availableStatuses.length > 0) Container(
+                            width: 120,
+                            height: 40,
+                            margin: const EdgeInsets.symmetric(vertical: 4),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: availableStatuses[0]['color'],
+                            ),
+                            child: CustomSlidableAction(
+                              onPressed: (context) async {
+                                await _updateTaskStatus(
+                                  taskId,
+                                  availableStatuses[0]['status'],
+                                );
+                                Slidable.of(context)?.close();
+                              },
+                              padding: EdgeInsets.zero,
+                              backgroundColor: Colors.transparent,
+                              foregroundColor: Colors.white,
+                              child: Text(
+                                availableStatuses[0]['display'],
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                          if (availableStatuses.length > 1) Container(
+                            width: 120,
+                            height: 40,
+                            margin: const EdgeInsets.symmetric(vertical: 4),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: availableStatuses[1]['color'],
+                            ),
+                            child: CustomSlidableAction(
+                              onPressed: (context) async {
+                                await _updateTaskStatus(
+                                  taskId,
+                                  availableStatuses[1]['status'],
+                                );
+                                Slidable.of(context)?.close();
+                              },
+                              padding: EdgeInsets.zero,
+                              backgroundColor: Colors.transparent,
+                              foregroundColor: Colors.white,
+                              child: Text(
+                                availableStatuses[1]['display'],
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
                 ],
               ),
+              child: _buildTaskContainer(title, description, status, color, deadline),
+            ),
+    );
+  }
+
+  Widget _buildTaskContainer(
+    String title,
+    String description,
+    String status,
+    Color color,
+    String deadline,
+  ) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.black,
+        borderRadius: BorderRadius.circular(15),
+        border: Border.all(color: Colors.white, width: 1.5),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(
+              fontFamily: 'arcade',
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            description,
+            style: TextStyle(fontSize: 14, color: Colors.grey[400]),
+          ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Row(
+                children: [
+                  Icon(Icons.access_time, size: 16, color: Colors.grey[400]),
+                  const SizedBox(width: 4),
+                  Text(
+                    deadline,
+                    style: TextStyle(fontSize: 12, color: Colors.grey[400]),
+                  ),
+                ],
+              ),
+              const Spacer(),
+              Container(
+                width: 81,
+                padding: const EdgeInsets.symmetric(vertical: 4),
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: color,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  status,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
             ],
           ),
-        ),
+        ],
       ),
     );
   }
