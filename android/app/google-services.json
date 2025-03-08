@@ -1,0 +1,49 @@
+{
+  "project_info": {
+    "project_number": "307326463157",
+    "firebase_url": "https://gamy-bd345-default-rtdb.firebaseio.com",
+    "project_id": "gamy-bd345",
+    "storage_bucket": "gamy-bd345.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:307326463157:android:44a1ede97a93d9b9a2a2fc",
+        "android_client_info": {
+          "package_name": "com.example.gamytask_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCnCgmTZT5rHZ8GCyhyH2urSxKQ3QRwLQ4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:307326463157:android:8e651fbad4627baba2a2fc",
+        "android_client_info": {
+          "package_name": "com.example.gaytask_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCnCgmTZT5rHZ8GCyhyH2urSxKQ3QRwLQ4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
