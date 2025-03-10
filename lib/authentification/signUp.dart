@@ -81,16 +81,32 @@ class _SignUpPageState extends State<SignUpPage> {
         'email': emailController.text.trim(),
         'name': nameController.text.trim(),
         'role': _selectedRole,
-        'teamID':
-            teamIdController.text.trim(), // Save teamID from the new field
+        'teamID': teamIdController.text.trim(), // Save teamID from the new field
+        'points': 0, // Ajout du champ points initialisé à 0
       });
 
       Navigator.pushReplacementNamed(context, '/'); // Redirect to AuthWrapper
     } catch (e) {
       setState(() {
-        _errorMessage = "Failed to sign up. ${e.toString()}";
-        _isLoading = false;
-      });
+      if (e is FirebaseAuthException) {
+        switch (e.code) {
+          case 'email-already-in-use':
+            _errorMessage = "This email is already in use.";
+            break;
+          case 'weak-password':
+            _errorMessage = "Password must be at least 6 characters.";
+            break;
+          case 'invalid-email':
+            _errorMessage = "Enter a valid email address.";
+            break;
+          default:
+            _errorMessage = "Authentication failed. Please try again.";
+        }
+      } else {
+        _errorMessage = "An error occurred. Please check your connection.";
+      }
+      _isLoading = false;
+    });
     }
   }
 

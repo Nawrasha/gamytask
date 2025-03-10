@@ -48,11 +48,11 @@ class BottomNavBar extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 30),
-                    // Create Task Button
+                    // Create Task Button with Image
                     _buildOptionButton(
                       context,
                       'Create Task',
-                      Icons.edit_note_outlined,
+                      'assets/Edit.png',  // Image asset instead of icon
                       () {
                         Navigator.pop(context); // Close the bottom sheet
                         Navigator.push(
@@ -62,11 +62,11 @@ class BottomNavBar extends StatelessWidget {
                       },
                     ),
                     const SizedBox(height: 12),
-                    // Espace privé Button
+                    // Espace privé Button with Image
                     _buildOptionButton(
                       context,
                       'Espace privé',
-                      Icons.space_dashboard_outlined,
+                      'assets/Plus.png',  // Image asset instead of icon
                       () {
                         Navigator.pop(context);
                         Navigator.push(
@@ -96,20 +96,6 @@ class BottomNavBar extends StatelessWidget {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: Colors.yellow,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.yellow.withOpacity(0.3),
-                          spreadRadius: 4,
-                          blurRadius: 8,
-                          offset: const Offset(0, 2),
-                        ),
-                        BoxShadow(
-                          color: Colors.white.withOpacity(0.2),
-                          spreadRadius: 1,
-                          blurRadius: 4,
-                          offset: const Offset(0, -1),
-                        ),
-                      ],
                     ),
                     child: const Icon(
                       Icons.close,
@@ -129,7 +115,7 @@ class BottomNavBar extends StatelessWidget {
   Widget _buildOptionButton(
     BuildContext context, 
     String text, 
-    IconData icon,
+    String imagePath,  // Change icon to imagePath
     VoidCallback onPressed,
   ) {
     return InkWell(
@@ -147,7 +133,12 @@ class BottomNavBar extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Icon(icon, color: Colors.white, size: 24),
+            Image.asset(
+              imagePath,  // Display image instead of icon
+              width: 24,
+              height: 24,
+              fit: BoxFit.cover,
+            ),
             const SizedBox(width: 12),
             Text(
               text,
@@ -176,12 +167,13 @@ class BottomNavBar extends StatelessWidget {
               IconButton(
                 icon: Image.asset(
                   'assets/Home.png',
-                  width: 24,
-                  height: 24,
+                  width: 26,
+                  height: 26,
                   color: currentIndex == 0 ? Colors.yellow : Colors.grey,
                 ),
                 onPressed: () => onTap(0),
               ),
+              const SizedBox(width: 10),
               IconButton(
                 icon: Image.asset(
                   'assets/Folder.png',
@@ -191,7 +183,7 @@ class BottomNavBar extends StatelessWidget {
                 ),
                 onPressed: () => onTap(1),
               ),
-              const SizedBox(width: 60),
+              const SizedBox(width:70),
               IconButton(
                 icon: Image.asset(
                   'assets/Prize.png',
@@ -201,11 +193,12 @@ class BottomNavBar extends StatelessWidget {
                 ),
                 onPressed: () => onTap(2),
               ),
+              const SizedBox(width:5),
               IconButton(
                 icon: Image.asset(
                   'assets/Profile.png',
-                  width: 24,
-                  height: 24,
+                  width: 30,
+                  height: 30,
                   color: currentIndex == 3 ? Colors.yellow : Colors.grey,
                 ),
                 onPressed: () => onTap(3),
@@ -215,31 +208,18 @@ class BottomNavBar extends StatelessWidget {
         ),
         Positioned(
           left: MediaQuery.of(context).size.width / 2 - 30,
-          bottom: 25,
+          bottom: 10,
           child: GestureDetector(
             onTap: () => _showAddOptions(context), // Updated to show popup
             child: Container(
-              width: 50,
-              height: 50,
+              width: 45,
+              height: 45,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: Colors.yellow,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.yellow.withOpacity(0.3),
-                    spreadRadius: 4,
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                  BoxShadow(
-                    color: Colors.white.withOpacity(0.2),
-                    spreadRadius: 1,
-                    blurRadius: 4,
-                    offset: const Offset(0, -1),
-                  ),
-                ],
+                
               ),
-              child: const Icon(
+                child: const Icon(
                 Icons.add,
                 color: Colors.white,
                 size: 30,
