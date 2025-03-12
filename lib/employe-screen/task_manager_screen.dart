@@ -25,7 +25,7 @@ class Task {
   // Factory constructor to create Task from Firestore data
   factory Task.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
-    
+
     return Task(
       title: data['title'] ?? 'Untitled',
       description: data['description'] ?? 'No description',
@@ -76,22 +76,52 @@ class _TaskManagerScreenState extends State<TaskManagerScreen> {
   // Add this new method to update task status in Firestore
   Future<void> _updateTaskStatus(String taskId, String newStatus) async {
     try {
+      final user = _auth.currentUser;
+      if (user == null) return;
+
+      // Update task status
       await FirebaseFirestore.instance.collection('tasks').doc(taskId).update({
-        'status': newStatus.toLowerCase().replaceAll(' ', '-'), // Convert "In progress" to "in-progress"
+        'status': newStatus.toLowerCase().replaceAll(' ', '-'),
       });
+
+      if (newStatus == 'completed') {
+        final userRef = FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid);
+
+        // Get current user data
+        final userDoc = await userRef.get();
+        final userData = userDoc.data() ?? {};
+
+        int currentScore = (userData['score'] ?? 0) + 1;
+        int totalScore = (userData['totalScore'] ?? 0) + 1;
+
+        if (currentScore >= 100) {
+          // Reset current score but keep adding to totalScore
+          await userRef.update({'score': 0, 'totalScore': totalScore});
+          _showCompletedPopup(context, isAchievement: true);
+        } else {
+          // Update both scores
+          await userRef.update({
+            'score': currentScore,
+            'totalScore': totalScore,
+          });
+          _showCompletedPopup(context);
+        }
+      }
     } catch (e) {
       print('Error updating task status: $e');
-      // You might want to show a snackbar or alert here
     }
   }
 
   void _setupTasksStream() {
     final user = _auth.currentUser;
     if (user != null) {
-      _tasksStream = FirebaseFirestore.instance
-          .collection('tasks')
-          .where('userId', isEqualTo: user.uid)
-          .snapshots();
+      _tasksStream =
+          FirebaseFirestore.instance
+              .collection('tasks')
+              .where('userId', isEqualTo: user.uid)
+              .snapshots();
     }
   }
 
@@ -177,7 +207,8 @@ class _TaskManagerScreenState extends State<TaskManagerScreen> {
                           );
                         }
 
-                        if (snapshot.connectionState == ConnectionState.waiting) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
                           return const Center(
                             child: Padding(
                               padding: EdgeInsets.all(20.0),
@@ -203,150 +234,205 @@ class _TaskManagerScreenState extends State<TaskManagerScreen> {
                           );
                         }
 
-                        tasks = snapshot.data!.docs
-                            .map((doc) => Task.fromFirestore(doc))
-                            .where((task) => task.status.toLowerCase() != 'completed')
-                            .toList();
+                        tasks =
+                            snapshot.data!.docs
+                                .map((doc) => Task.fromFirestore(doc))
+                                .where(
+                                  (task) =>
+                                      task.status.toLowerCase() != 'completed',
+                                )
+                                .toList();
 
                         return Column(
-                          children: tasks.map((task) {
-                            // Get available status options (excluding current status)
-                            List<Map<String, dynamic>> getAvailableStatuses() {
-                              final allStatuses = [
-                                {
-                                  'status': 'to-do',
-                                  'color': const Color(0xFFFE0000),
-                                  'icon': Icons.pending_actions,
-                                  'display': 'To do'
-                                },
-                                {
-                                  'status': 'in-progress',
-                                  'color': const Color(0xFF00CCFF),
-                                  'icon': Icons.trending_up,
-                                  'display': 'In progress'
-                                },
-                                {
-                                  'status': 'completed',
-                                  'color': const Color(0xFF00CD06),
-                                  'icon': Icons.check_circle,
-                                  'display': 'Completed'
-                                },
-                              ];
-                              // Filter out current status using lowercase comparison
-                              return allStatuses
-                                  .where((s) => s['status'] != task.status.toLowerCase())
-                                  .toList();
-                            }
+                          children:
+                              tasks.map((task) {
+                                // Get available status options (excluding current status)
+                                List<Map<String, dynamic>>
+                                getAvailableStatuses() {
+                                  final allStatuses = [
+                                    {
+                                      'status': 'to-do',
+                                      'color': const Color(0xFFFE0000),
+                                      'icon': Icons.pending_actions,
+                                      'display': 'To do',
+                                    },
+                                    {
+                                      'status': 'in-progress',
+                                      'color': const Color(0xFF00CCFF),
+                                      'icon': Icons.trending_up,
+                                      'display': 'In progress',
+                                    },
+                                    {
+                                      'status': 'completed',
+                                      'color': const Color(0xFF00CD06),
+                                      'icon': Icons.check_circle,
+                                      'display': 'Completed',
+                                    },
+                                  ];
+                                  // Filter out current status using lowercase comparison
+                                  return allStatuses
+                                      .where(
+                                        (s) =>
+                                            s['status'] !=
+                                            task.status.toLowerCase(),
+                                      )
+                                      .toList();
+                                }
 
-                            final availableStatuses = getAvailableStatuses();
+                                final availableStatuses =
+                                    getAvailableStatuses();
 
-                            // Find the document that matches this task
-                            final taskDoc = snapshot.data!.docs.firstWhere(
-                              (doc) {
-                                final data = doc.data() as Map<String, dynamic>;
-                                return data['title'] == task.title &&
-                                       data['description'] == task.description &&
-                                       data['userId'] == task.userId;
-                              },
-                            );
+                                // Find the document that matches this task
+                                final taskDoc = snapshot.data!.docs.firstWhere((
+                                  doc,
+                                ) {
+                                  final data =
+                                      doc.data() as Map<String, dynamic>;
+                                  return data['title'] == task.title &&
+                                      data['description'] == task.description &&
+                                      data['userId'] == task.userId;
+                                });
 
-                            return Padding(
-                              padding: const EdgeInsets.only(bottom: 16.0),
-                              child: Slidable(
-                                key: ValueKey(task.title),
-                                startActionPane: ActionPane(
-                                  motion: const StretchMotion(),
-                                  extentRatio: 0.3,
-                                  children: [
-                                    Expanded(
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 8.0,
-                                        ),
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            if (availableStatuses.length > 0) Container(
-                                              width: 120,
-                                              height: 40,
-                                              margin: const EdgeInsets.symmetric(
-                                                vertical: 4,
-                                              ),
-                                              decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.circular(20),
-                                                color: availableStatuses[0]['color'],
-                                              ),
-                                              child: CustomSlidableAction(
-                                                onPressed: (context) async {
-                                                  final newStatus = availableStatuses[0]['status'];
-                                                  await _updateTaskStatus(taskDoc.id, newStatus);
-
-                                                  if (newStatus == 'completed') {
-                                                    _showCompletedPopup(context);
-                                                  }
-
-                                                  Slidable.of(context)?.close();
-                                                },
-                                                padding: EdgeInsets.zero,
-                                                backgroundColor: Colors.transparent,
-                                                foregroundColor: Colors.white,
-                                                child: Text(
-                                                  availableStatuses[0]['display'],
-                                                  style: const TextStyle(
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                              ),
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: 16.0),
+                                  child: Slidable(
+                                    key: ValueKey(task.title),
+                                    startActionPane: ActionPane(
+                                      motion: const StretchMotion(),
+                                      extentRatio: 0.3,
+                                      children: [
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 8.0,
                                             ),
-                                            if (availableStatuses.length > 1) Container(
-                                              width: 120,
-                                              height: 40,
-                                              margin: const EdgeInsets.symmetric(
-                                                vertical: 4,
-                                              ),
-                                              decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.circular(20),
-                                                color: availableStatuses[1]['color'],
-                                              ),
-                                              child: CustomSlidableAction(
-                                                onPressed: (context) async {
-                                                  final newStatus = availableStatuses[1]['status'];
-                                                  await _updateTaskStatus(taskDoc.id, newStatus);
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                if (availableStatuses.length >
+                                                    0)
+                                                  Container(
+                                                    width: 120,
+                                                    height: 40,
+                                                    margin:
+                                                        const EdgeInsets.symmetric(
+                                                          vertical: 4,
+                                                        ),
+                                                    decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            20,
+                                                          ),
+                                                      color:
+                                                          availableStatuses[0]['color'],
+                                                    ),
+                                                    child: CustomSlidableAction(
+                                                      onPressed: (
+                                                        context,
+                                                      ) async {
+                                                        final newStatus =
+                                                            availableStatuses[0]['status'];
+                                                        await _updateTaskStatus(
+                                                          taskDoc.id,
+                                                          newStatus,
+                                                        );
 
-                                                  if (newStatus == 'completed') {
-                                                    _showCompletedPopup(context);
-                                                  }
-                                                  Slidable.of(context)?.close();
-                                                },
-                                                padding: EdgeInsets.zero,
-                                                backgroundColor: Colors.transparent,
-                                                foregroundColor: Colors.white,
-                                                child: Text(
-                                                  availableStatuses[1]['display'],
-                                                  style: const TextStyle(
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.bold,
+                                                        if (newStatus ==
+                                                            'completed') {
+                                                          _showCompletedPopup(
+                                                            context,
+                                                          );
+                                                        }
+
+                                                        Slidable.of(
+                                                          context,
+                                                        )?.close();
+                                                      },
+                                                      padding: EdgeInsets.zero,
+                                                      backgroundColor:
+                                                          Colors.transparent,
+                                                      foregroundColor:
+                                                          Colors.white,
+                                                      child: Text(
+                                                        availableStatuses[0]['display'],
+                                                        style: const TextStyle(
+                                                          fontSize: 14,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
                                                   ),
-                                                ),
-                                              ),
+                                                if (availableStatuses.length >
+                                                    1)
+                                                  Container(
+                                                    width: 120,
+                                                    height: 40,
+                                                    margin:
+                                                        const EdgeInsets.symmetric(
+                                                          vertical: 4,
+                                                        ),
+                                                    decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            20,
+                                                          ),
+                                                      color:
+                                                          availableStatuses[1]['color'],
+                                                    ),
+                                                    child: CustomSlidableAction(
+                                                      onPressed: (
+                                                        context,
+                                                      ) async {
+                                                        final newStatus =
+                                                            availableStatuses[1]['status'];
+                                                        await _updateTaskStatus(
+                                                          taskDoc.id,
+                                                          newStatus,
+                                                        );
+
+                                                        if (newStatus ==
+                                                            'completed') {
+                                                          _showCompletedPopup(
+                                                            context,
+                                                          );
+                                                        }
+                                                        Slidable.of(
+                                                          context,
+                                                        )?.close();
+                                                      },
+                                                      padding: EdgeInsets.zero,
+                                                      backgroundColor:
+                                                          Colors.transparent,
+                                                      foregroundColor:
+                                                          Colors.white,
+                                                      child: Text(
+                                                        availableStatuses[1]['display'],
+                                                        style: const TextStyle(
+                                                          fontSize: 14,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                              ],
                                             ),
-                                          ],
+                                          ),
                                         ),
-                                      ),
+                                      ],
                                     ),
-                                  ],
-                                ),
-                                child: _buildTaskCard(
-                                  title: task.title,
-                                  description: task.description,
-                                  status: task.status,
-                                  date: task.getFormattedDeadline(),
-                                  color: task.color,
-                                ),
-                              ),
-                            );
-                          }).toList(),
+                                    child: _buildTaskCard(
+                                      title: task.title,
+                                      description: task.description,
+                                      status: task.status,
+                                      date: task.getFormattedDeadline(),
+                                      color: task.color,
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
                         );
                       },
                     ),
@@ -431,7 +517,7 @@ class _TaskManagerScreenState extends State<TaskManagerScreen> {
   }
 
   // Function to show the dialog when task is completed
-  void _showCompletedPopup(BuildContext context) {
+  void _showCompletedPopup(BuildContext context, {bool isAchievement = false}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -458,18 +544,20 @@ class _TaskManagerScreenState extends State<TaskManagerScreen> {
                 ),
                 const SizedBox(height: 5),
                 Column(
-                  children: const [
+                  children: [
                     Text(
-                      'Task Completed',
-                      style: TextStyle(
+                      isAchievement ? 'Congratulations!' : 'Task Completed',
+                      style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 24,
                         color: Color(0xFF182035),
                       ),
                     ),
                     Text(
-                      'Great Job!',
-                      style: TextStyle(
+                      isAchievement
+                          ? 'You\'ve reached 100 points!'
+                          : 'Great Job!',
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w500,
                         color: Color(0xFF606268),
@@ -477,8 +565,10 @@ class _TaskManagerScreenState extends State<TaskManagerScreen> {
                       textAlign: TextAlign.center,
                     ),
                     Text(
-                      'You received 1 point.',
-                      style: TextStyle(
+                      isAchievement
+                          ? 'You\'ve earned:\n1 Day Off\n\$50 Bonus'
+                          : 'You received 1 point.',
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w500,
                         color: Color(0xFF606268),
@@ -529,5 +619,17 @@ class _TaskManagerScreenState extends State<TaskManagerScreen> {
       'Saturday',
     ];
     return daysOfWeek[now.weekday % 7];
+  }
+}
+
+// Run this once to add totalScore to all existing users
+Future<void> addTotalScoreField() async {
+  final usersRef = FirebaseFirestore.instance.collection('users');
+  final users = await usersRef.get();
+
+  for (var user in users.docs) {
+    await usersRef.doc(user.id).update({
+      'totalScore': user.data()['score'] ?? 0,
+    });
   }
 }

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class LeaderboardPage extends StatefulWidget {
   const LeaderboardPage({super.key});
@@ -8,48 +10,95 @@ class LeaderboardPage extends StatefulWidget {
 }
 
 class _LeaderboardPageState extends State<LeaderboardPage> {
-  bool _isMonthlySelected = true; // Par défaut, "Monthly" est sélectionné
+  bool _isMonthlySelected = true;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // Liste des participants pour "Monthly"
-  final List<Map<String, dynamic>> _monthlyEntries = [
-    {
-      "name": "adem omri",
-      "points": "2,569",
-      "rank": "1",
-      "avatar": "assets/avatar1.png",
-      "badge": "gold"
-    },
-    {
-      "name": "ECHEIKHROHOU",
-      "points": "1,469",
-      "rank": "2",
-      "avatar": "assets/avatar2.png",
-      "badge": "silver"
-    },
-    {
-      "name": "LE BOSS ADAM",
-      "points": "1,053",
-      "rank": "3",
-      "avatar": "assets/avatar3.png",
-      "badge": "bronze"
-    },
-    {
-      "name": "Madame cheikhrohou",
-      "points": "590",
-      "rank": "4",
-      "avatar": "assets/avatar4.png",
-      "badge": "none"
-    },
-  ];
+  Future<List<Map<String, dynamic>>> _fetchLeaderboardData() async {
+    try {
+      final currentUser = _auth.currentUser;
+      if (currentUser == null) return [];
 
-  // Liste des participants pour "All Time"
-  final List<Map<String, String>> _allTimeEntries = [
-    {"name": "Si user", "points": "5,000 points", "rank": "1"},
-    {"name": "user", "points": "20.60 points", "rank": "2"},
-    {"name": "User le boss", "points": "2,053 points", "rank": "3"},
-    {"name": "Madame user", "points": "1,690 points", "rank": "4"},
-    {"name": "usegh", "points": "1,448 points", "rank": "5"},
-  ];
+      // Get current user's data to get their teamID
+      final currentUserDoc =
+          await _firestore.collection('users').doc(currentUser.uid).get();
+
+      if (!currentUserDoc.exists) return [];
+
+      final currentUserData = currentUserDoc.data() as Map<String, dynamic>;
+      final userTeamID = currentUserData['teamID'];
+
+      // Get all users with the same teamID
+      final QuerySnapshot teamUsersSnapshot =
+          await _firestore
+              .collection('users')
+              .where('teamID', isEqualTo: userTeamID)
+              .get();
+
+      List<Map<String, dynamic>> users =
+          teamUsersSnapshot.docs.map((doc) {
+            final data = doc.data() as Map<String, dynamic>;
+            // Make sure totalScore is always >= score
+            int currentScore = data['score'] ?? 0;
+            int totalScore = data['totalScore'] ?? 0;
+            if (totalScore < currentScore) {
+              totalScore = currentScore;
+            }
+
+            return {
+              'id': doc.id,
+              'name': data['name'] ?? 'Unknown',
+              'score': currentScore,
+              'totalScore': totalScore,
+              'profileImage': data['profileImage'] ?? '',
+            };
+          }).toList();
+
+      // Sort based on selected view
+      users.sort((a, b) {
+        if (_isMonthlySelected) {
+          return (b['score'] as int).compareTo(a['score'] as int);
+        } else {
+          return (b['totalScore'] as int).compareTo(a['totalScore'] as int);
+        }
+      });
+
+      print('Found ${users.length} users in team');
+      return users;
+    } catch (e) {
+      print('Detailed error in _fetchLeaderboardData: $e');
+      // Return current user's data as fallback
+      try {
+        final currentUser = _auth.currentUser;
+        if (currentUser == null) return [];
+
+        final userDoc =
+            await _firestore.collection('users').doc(currentUser.uid).get();
+
+        if (!userDoc.exists) return [];
+
+        final userData = userDoc.data() as Map<String, dynamic>;
+        int currentScore = userData['score'] ?? 0;
+        int totalScore = userData['totalScore'] ?? 0;
+        if (totalScore < currentScore) {
+          totalScore = currentScore;
+        }
+
+        return [
+          {
+            'id': currentUser.uid,
+            'name': userData['name'] ?? 'Unknown',
+            'score': currentScore,
+            'totalScore': totalScore,
+            'profileImage': userData['profileImage'] ?? '',
+          },
+        ];
+      } catch (e) {
+        print('Error getting current user data: $e');
+        return [];
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,66 +120,118 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
           ),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            const SizedBox(height: 20),
-            // Toggle buttons
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _buildToggleButton("Monthly", _isMonthlySelected, () {
-                  setState(() => _isMonthlySelected = true);
-                }),
-                const SizedBox(width: 12),
-                _buildToggleButton("All Time", !_isMonthlySelected, () {
-                  setState(() => _isMonthlySelected = false);
-                }),
-              ],
-            ),
-            const SizedBox(height: 24),
-            // Podium image
-            Container(
-              width: double.infinity,
-              height: 220,
-              color: Colors.black,
-              child: Center(
-                child: Image.asset(
-                  'assets/laderboardimg.png',
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  height: 220,
-                  fit: BoxFit.contain,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Center(
-                      child: Text(
-                        'Image not found',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    );
-                  },
+      body: RefreshIndicator(
+        onRefresh: () async {
+          setState(() {});
+          return Future.delayed(Duration(seconds: 1));
+        },
+        child: SingleChildScrollView(
+          physics: AlwaysScrollableScrollPhysics(),
+          child: Column(
+            children: [
+              const SizedBox(height: 20),
+              // Toggle buttons
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _buildToggleButton("Monthly", _isMonthlySelected, () {
+                    setState(() => _isMonthlySelected = true);
+                  }),
+                  const SizedBox(width: 12),
+                  _buildToggleButton("All Time", !_isMonthlySelected, () {
+                    setState(() => _isMonthlySelected = false);
+                  }),
+                ],
+              ),
+              const SizedBox(height: 24),
+              // Podium image
+              Container(
+                width: double.infinity,
+                height: 220,
+                color: Colors.black,
+                child: Center(
+                  child: Image.asset(
+                    'assets/laderboardimg.png',
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    height: 220,
+                    fit: BoxFit.contain,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Center(
+                        child: Text(
+                          'Image not found',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
-            ),
-            // Leaderboard list
-            ListView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              padding: EdgeInsets.zero,
-              itemCount: _isMonthlySelected ? _monthlyEntries.length : _allTimeEntries.length,
-              itemBuilder: (context, index) {
-                final entry = _isMonthlySelected ? _monthlyEntries[index] : _allTimeEntries[index];
-                return Center(
-                  child: _buildLeaderboardEntry(
-                    entry["name"]!,
-                    entry["points"]!,
-                    entry["rank"]!,
-                    _isMonthlySelected ? entry["avatar"]! : "assets/avatar1.png",
-                    MediaQuery.of(context).size.width * 0.9,
-                  ),
-                );
-              },
-            ),
-          ],
+              // Leaderboard list
+              FutureBuilder<List<Map<String, dynamic>>>(
+                future: _fetchLeaderboardData(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(
+                      child: CircularProgressIndicator(color: Colors.white),
+                    );
+                  }
+
+                  if (snapshot.hasError) {
+                    return Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(20),
+                        child: Column(
+                          children: [
+                            Text(
+                              'Error loading leaderboard',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            ElevatedButton(
+                              onPressed: () => setState(() {}),
+                              child: Text('Retry'),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }
+
+                  final users = snapshot.data ?? [];
+
+                  if (users.isEmpty) {
+                    return Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(20),
+                        child: Text(
+                          'No rankings available yet',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    );
+                  }
+
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: users.length,
+                    itemBuilder: (context, index) {
+                      final user = users[index];
+                      return _buildLeaderboardEntry(
+                        user['name'],
+                        _isMonthlySelected
+                            ? user['score'].toString()
+                            : user['totalScore'].toString(),
+                        (index + 1).toString(),
+                        user['profileImage'] ?? "assets/avatar1.png",
+                        MediaQuery.of(context).size.width * 0.9,
+                      );
+                    },
+                  );
+                },
+              ),
+              SizedBox(height: 20),
+            ],
+          ),
         ),
       ),
     );
@@ -157,7 +258,13 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
     );
   }
 
-  Widget _buildLeaderboardEntry(String name, String points, String rank, String avatar, double width) {
+  Widget _buildLeaderboardEntry(
+    String name,
+    String points,
+    String rank,
+    String avatarUrl,
+    double width,
+  ) {
     return Container(
       width: width,
       height: 92,
@@ -190,9 +297,12 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
           SizedBox(width: 16),
           CircleAvatar(
             radius: 24,
-            backgroundImage: AssetImage(avatar),
+            backgroundImage:
+                avatarUrl.startsWith('http')
+                    ? NetworkImage(avatarUrl)
+                    : AssetImage(avatarUrl) as ImageProvider,
             onBackgroundImageError: (exception, stackTrace) {
-              // Handle avatar image error
+              print('Error loading avatar: $exception');
             },
           ),
           SizedBox(width: 16),
@@ -212,10 +322,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                 SizedBox(height: 4),
                 Text(
                   "$points points",
-                  style: TextStyle(
-                    color: Colors.grey,
-                    fontSize: 14,
-                  ),
+                  style: TextStyle(color: Colors.grey, fontSize: 14),
                 ),
               ],
             ),
@@ -225,8 +332,8 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
               rank == "1"
                   ? "assets/goldmedal.png"
                   : rank == "2"
-                      ? "assets/argentmedal.png"
-                      : "assets/bronzemedal.png",
+                  ? "assets/argentmedal.png"
+                  : "assets/bronzemedal.png",
               width: 28,
               height: 28,
             )

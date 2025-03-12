@@ -57,7 +57,9 @@ class BottomNavBar extends StatelessWidget {
                         Navigator.pop(context); // Close the bottom sheet
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const TaskCreate()), // Navigate to TaskCreate
+                          MaterialPageRoute(
+                            builder: (context) => const TaskCreate(),
+                          ), // Navigate to TaskCreate
                         );
                       },
                     ),
@@ -71,16 +73,15 @@ class BottomNavBar extends StatelessWidget {
                         Navigator.pop(context);
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const NotePage()),
+                          MaterialPageRoute(
+                            builder: (context) => const NotePage(),
+                          ),
                         );
                       },
                     ),
                     const Spacer(),
                     // Bottom section
-                    Container(
-                      height: 100,
-                      color: const Color(0xFF1E1E1E),
-                    ),
+                    Container(height: 100, color: const Color(0xFF1E1E1E)),
                   ],
                 ),
               ),
@@ -127,8 +128,8 @@ class BottomNavBar extends StatelessWidget {
   }
 
   Widget _buildOptionButton(
-    BuildContext context, 
-    String text, 
+    BuildContext context,
+    String text,
     IconData icon,
     VoidCallback onPressed,
   ) {
@@ -139,10 +140,7 @@ class BottomNavBar extends StatelessWidget {
         margin: const EdgeInsets.symmetric(horizontal: 16),
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         decoration: BoxDecoration(
-          border: Border.all(
-            color: Colors.white.withOpacity(0.3),
-            width: 1,
-          ),
+          border: Border.all(color: Colors.white.withOpacity(0.3), width: 1),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Row(
@@ -239,11 +237,7 @@ class BottomNavBar extends StatelessWidget {
                   ),
                 ],
               ),
-              child: const Icon(
-                Icons.add,
-                color: Colors.white,
-                size: 30,
-              ),
+              child: const Icon(Icons.add, color: Colors.white, size: 30),
             ),
           ),
         ),
