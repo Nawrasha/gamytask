@@ -29,11 +29,11 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
       final userTeamID = currentUserData['teamID'];
 
       // Get all users with the same teamID
-      final QuerySnapshot teamUsersSnapshot =
-          await _firestore
-              .collection('users')
-              .where('teamID', isEqualTo: userTeamID)
-              .get();
+      final QuerySnapshot teamUsersSnapshot = await _firestore
+          .collection('users')
+          .where('teamID', isEqualTo: userTeamID)
+          .where('role', isEqualTo: 'employee')
+          .get();
 
       List<Map<String, dynamic>> users =
           teamUsersSnapshot.docs.map((doc) {
@@ -107,10 +107,6 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
-        ),
         title: Text(
           "Leaderboard",
           style: TextStyle(

@@ -72,8 +72,8 @@ class Task {
       title: data['title'] ?? 'Untitled',
       description: data['description'] ?? 'No description',
       status: data['status'] ?? 'to-do',
-      createdAt: (data['createdAt'] as Timestamp).toDate(),
-      deadline: (data['deadline'] as Timestamp).toDate(),
+      createdAt: (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
+      deadline: (data['deadline'] as Timestamp?)?.toDate() ?? DateTime.now(),
       userId: data['userId'] ?? '',
       color: _getStatusColor(data['status'] ?? 'to-do'),
       userImage: userData['profileImage'] ?? 'assets/default_user.png',
@@ -286,6 +286,8 @@ class _TaskManagerScreenState extends State<TaskManagerScreen> {
       final userDoc = await FirebaseFirestore.instance.collection('users').doc(userId).get();
       if (userDoc.exists) {
         userData[userId] = userDoc.data() as Map<String, dynamic>;
+      } else {
+        userData[userId] = {'profileImage': 'assets/default_user.png', 'name': 'Unknown User'}; // Default values
       }
     }
 
@@ -329,110 +331,65 @@ class _TaskManagerScreenState extends State<TaskManagerScreen> {
   }
 
   Widget _buildTaskItem(Task task) {
-    List<Map<String, dynamic>> getAvailableStatuses() {
-      final allStatuses = [
-        {
-          'status': 'to-do',
-          'color': const Color(0xFFFE0000),
-          'display': 'To do'
-        },
-        {
-          'status': 'in-progress',
-          'color': const Color(0xFF00CCFF),
-          'display': 'In progress'
-        },
-        {
-          'status': 'completed',
-          'color': const Color(0xFF00CD06),
-          'display': 'Completed'
-        },
-      ];
-      return allStatuses
-          .where((s) => s['status'] != task.status.toLowerCase())
-          .toList();
-    }
-
-    final availableStatuses = getAvailableStatuses();
-
     return Padding(
       padding: const EdgeInsets.only(bottom: 16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Slidable(
-            startActionPane: ActionPane(
-              motion: const StretchMotion(),
-              extentRatio: 0.3,
-              children: [
-                ...availableStatuses.map((status) => SlidableAction(
-                      flex: 1,
-                      backgroundColor: status['color'],
-                      foregroundColor: Colors.white,
-                      onPressed: (context) async {
-                        await _updateTaskStatus(task.id, status['status']);
-                        if (status['status'] == 'completed') {
-                          _showCompletedPopup(context);
-                        }
-                      },
-                      label: status['display'],
-                    )),
-              ],
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.black,
+              borderRadius: BorderRadius.circular(15),
+              border: Border.all(color: Colors.white, width: 1.5),
             ),
-            child: Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.black,
-                borderRadius: BorderRadius.circular(15),
-                border: Border.all(color: Colors.white, width: 1.5),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    task.title,
-                    style: const TextStyle(
-                      fontFamily: 'arcade',
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  task.title,
+                  style: const TextStyle(
+                    fontFamily: 'arcade',
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  task.description,
+                  style: TextStyle(fontSize: 14, color: Colors.grey[400]),
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Icon(Icons.access_time, size: 16, color: Colors.grey[400]),
+                    const SizedBox(width: 4),
+                    Text(
+                      task.getFormattedDeadline(),
+                      style: TextStyle(fontSize: 12, color: Colors.grey[400]),
                     ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    task.description,
-                    style: TextStyle(fontSize: 14, color: Colors.grey[400]),
-                  ),
-                  const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      Icon(Icons.access_time, size: 16, color: Colors.grey[400]),
-                      const SizedBox(width: 4),
-                      Text(
-                        task.getFormattedDeadline(),
-                        style: TextStyle(fontSize: 12, color: Colors.grey[400]),
+                    const Spacer(),
+                    Container(
+                      width: 81,
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: task.color,
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                      const Spacer(),
-                      Container(
-                        width: 81,
-                        padding: const EdgeInsets.symmetric(vertical: 4),
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          color: task.color,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Text(
-                          task.status,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
+                      child: Text(
+                        task.status,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
                         ),
                       ),
-                    ],
-                  ),
-                ],
-              ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
         ],

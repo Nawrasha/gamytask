@@ -70,8 +70,8 @@ class BottomNavBar extends StatelessWidget {
         ),
         // Bouton + au centre
         Positioned(
-          left: MediaQuery.of(context).size.width / 2 - 30, // Centrer le bouton
-          bottom: 25, // Position plus haute
+          left: MediaQuery.of(context).size.width / 2 - 30,
+          bottom: 8, // Changed from 25 to 8 to align with other buttons
           child: GestureDetector(
             onTap: onAddButtonPressed,
             child: Container(

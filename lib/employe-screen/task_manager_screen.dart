@@ -160,13 +160,6 @@ class _TaskManagerScreenState extends State<TaskManagerScreen> {
                             color: Colors.white,
                           ),
                         ),
-                        IconButton(
-                          icon: const Icon(
-                            Icons.notifications,
-                            color: Colors.white,
-                          ),
-                          onPressed: () {},
-                        ),
                       ],
                     ),
                     const SizedBox(height: 20),
@@ -179,20 +172,184 @@ class _TaskManagerScreenState extends State<TaskManagerScreen> {
                       ),
                     ),
                     const SizedBox(height: 20),
+                    // Updated Progress Container
+                    StreamBuilder<QuerySnapshot>(
+                      stream: FirebaseFirestore.instance
+                          .collection('tasks')
+                          .where('userId', isEqualTo: _auth.currentUser?.uid)
+                          .snapshots(),
+                      builder: (context, tasksSnapshot) {
+                        if (!tasksSnapshot.hasData) {
+                          return const SizedBox.shrink();
+                        }
 
-                    // Task List with StreamBuilder
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
+                        final completedTasks = tasksSnapshot.data!.docs
+                            .where((doc) => (doc.data() as Map<String, dynamic>)['status'] == 'completed')
+                            .length;
+                        final totalTasks = tasksSnapshot.data!.docs.length;
+
+                        return Container(
+                          height: 120,
+                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFFFD600),
+                            borderRadius: BorderRadius.circular(15),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.25),
+                                blurRadius: 4,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  StreamBuilder<DocumentSnapshot>(
+                                    stream: FirebaseFirestore.instance
+                                        .collection('users')
+                                        .doc(_auth.currentUser?.uid)
+                                        .snapshots(),
+                                    builder: (context, userSnapshot) {
+                                      // Print entire user data for debugging
+                                      print('User Data: ${userSnapshot.data?.data()}');
+                                      
+                                      if (!userSnapshot.hasData) {
+                                        print('No user data available');
+                                        return Container(
+                                          width: 45,
+                                          height: 45,
+                                          decoration: const BoxDecoration(
+                                            color: Colors.white,
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: const Center(
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: 2,
+                                              color: Color(0xFFFAD107),
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                      
+                                      final userData = userSnapshot.data?.data() as Map<String, dynamic>?;
+                                      print('Raw userData: $userData');
+                                      
+                                      // Try to get profileImage with different cases
+                                      final profileImage = userData?['profileImage'] ?? 
+                                                         userData?['ProfileImage'] ?? 
+                                                         userData?['profile_image'] ?? 
+                                                         userData?['profile_Image'];
+                                      
+                                      print('Profile Image URL found: $profileImage');
+                                      
+                                      return Container(
+                                        width: 45,
+                                        height: 45,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: ClipOval(
+                                          child: profileImage != null
+                                              ? Image.network(
+                                                  profileImage,
+                                                  fit: BoxFit.cover,
+                                                  errorBuilder: (context, error, stackTrace) {
+                                                    print('Error loading image: $error');
+                                                    print('Stack trace: $stackTrace');
+                                                    return const Icon(
+                                                      Icons.person,
+                                                      color: Color(0xFFFAD107),
+                                                      size: 30,
+                                                    );
+                                                  },
+                                                  loadingBuilder: (context, child, loadingProgress) {
+                                                    if (loadingProgress == null) {
+                                                      print('Image loaded successfully');
+                                                      return child;
+                                                    }
+                                                    print('Loading progress: ${loadingProgress.expectedTotalBytes}');
+                                                    return const Center(
+                                                      child: CircularProgressIndicator(
+                                                        strokeWidth: 2,
+                                                        color: Color(0xFFFAD107),
+                                                      ),
+                                                    );
+                                                  },
+                                                )
+                                              : const Icon(
+                                                  Icons.person,
+                                                  color: Color(0xFFFAD107),
+                                                  size: 30,
+                                                ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                  const SizedBox(width: 12),
+                                  StreamBuilder<DocumentSnapshot>(
+                                    stream: FirebaseFirestore.instance
+                                        .collection('users')
+                                        .doc(_auth.currentUser?.uid)
+                                        .snapshots(),
+                                    builder: (context, userSnapshot) {
+                                      if (!userSnapshot.hasData) {
+                                        return const Text('Loading...');
+                                      }
+                                      final userData = userSnapshot.data?.data() as Map<String, dynamic>?;
+                                      final name = userData?['name'] ?? 'Foulen ben foulen';
+                                      return Text(
+                                        name,
+                                        style: const TextStyle(
+                                          fontSize: 24,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black,
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: LinearProgressIndicator(
+                                      value: totalTasks > 0 ? completedTasks / totalTasks : 0,
+                                      backgroundColor: Colors.white,
+                                      valueColor: const AlwaysStoppedAnimation<Color>(Colors.black),
+                                      minHeight: 12,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 6),
+                                  Text(
+                                    '$completedTasks/$totalTasks tasks done',
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
                           "My tasks",
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
                           ),
-                        ),
-                      ],
                     ),
                     const SizedBox(height: 16),
                     StreamBuilder<QuerySnapshot>(
@@ -220,17 +377,79 @@ class _TaskManagerScreenState extends State<TaskManagerScreen> {
                         }
 
                         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                          return const Center(
-                            child: Padding(
-                              padding: EdgeInsets.all(20.0),
-                              child: Text(
-                                'No tasks found',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
+                          return Stack(
+                            children: [
+                              // Background ghosts
+                              Positioned(
+                                top: 120,
+                                right: 20,
+                                child: Opacity(
+                                  opacity: 0.5,
+                                  child: Image.asset('assets/ghost1.png',
+                                      width: 40, height: 40),
                                 ),
                               ),
-                            ),
+                              Positioned(
+                                top: 150,
+                                left: 40,
+                                child: Opacity(
+                                  opacity: 0.5,
+                                  child: Image.asset('assets/ghost2.png',
+                                      width: 35, height: 35),
+                                ),
+                              ),
+                              Positioned(
+                                top: 20,
+                                left: 60,
+                                child: Opacity(
+                                  opacity: 0.5,
+                                  child: Image.asset('assets/ghost3.png',
+                                      width: 35, height: 35),
+                                ),
+                              ),
+                              // Additional ghost images
+                              Positioned(
+                                top: 200,
+                                right: 60,
+                                child: Opacity(
+                                  opacity: 0.5,
+                                  child: Image.asset('assets/ghost1.png',
+                                      width: 40, height: 40),
+                                ),
+                              ),
+                              Positioned(
+                                top: 250,
+                                left: 80,
+                                child: Opacity(
+                                  opacity: 0.5,
+                                  child: Image.asset('assets/ghost2.png',
+                                      width: 35, height: 35),
+                                ),
+                              ),
+                              Positioned(
+                                top: 100,
+                                left: 100,
+                                child: Opacity(
+                                  opacity: 0.5,
+                                  child: Image.asset('assets/ghost3.png',
+                                      width: 35, height: 35),
+                                ),
+                              ),
+                              // Centered text
+                              const Center(
+                                child: Padding(
+                                  padding: EdgeInsets.all(20.0),
+                                  child: Text(
+                                    'No tasks left',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
                           );
                         }
 
@@ -242,6 +461,84 @@ class _TaskManagerScreenState extends State<TaskManagerScreen> {
                                       task.status.toLowerCase() != 'completed',
                                 )
                                 .toList();
+
+                        // Check if all tasks are completed
+                        if (tasks.isEmpty) {
+                          return Stack(
+                            children: [
+                              // Background ghosts
+                              Positioned(
+                                top: 120,
+                                right: 20,
+                                child: Opacity(
+                                  opacity: 0.5,
+                                  child: Image.asset('assets/ghost1.png',
+                                      width: 40, height: 40),
+                                ),
+                              ),
+                              Positioned(
+                                top: 150,
+                                left: 40,
+                                child: Opacity(
+                                  opacity: 0.5,
+                                  child: Image.asset('assets/ghost2.png',
+                                      width: 35, height: 35),
+                                ),
+                              ),
+                              Positioned(
+                                top: 20,
+                                left: 60,
+                                child: Opacity(
+                                  opacity: 0.5,
+                                  child: Image.asset('assets/ghost3.png',
+                                      width: 35, height: 35),
+                                ),
+                              ),
+                              // Additional ghost images
+                              Positioned(
+                                top: 200,
+                                right: 60,
+                                child: Opacity(
+                                  opacity: 0.5,
+                                  child: Image.asset('assets/ghost1.png',
+                                      width: 40, height: 40),
+                                ),
+                              ),
+                              Positioned(
+                                top: 250,
+                                left: 80,
+                                child: Opacity(
+                                  opacity: 0.5,
+                                  child: Image.asset('assets/ghost2.png',
+                                      width: 35, height: 35),
+                                ),
+                              ),
+                              Positioned(
+                                top: 100,
+                                left: 100,
+                                child: Opacity(
+                                  opacity: 0.5,
+                                  child: Image.asset('assets/ghost3.png',
+                                      width: 35, height: 35),
+                                ),
+                              ),
+                              // Centered text
+                              const Center(
+                                child: Padding(
+                                  padding: EdgeInsets.all(20.0),
+                                  child: Text(
+                                    'No tasks left',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                        }
 
                         return Column(
                           children:

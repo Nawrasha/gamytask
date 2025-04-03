@@ -28,11 +28,12 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
       final currentUserData = currentUserDoc.data() as Map<String, dynamic>;
       final userTeamID = currentUserData['teamID'];
 
-      // Get all users with the same teamID
+      // Get all users with the same teamID who are employees
       final QuerySnapshot teamUsersSnapshot =
           await _firestore
               .collection('users')
               .where('teamID', isEqualTo: userTeamID)
+              .where('role', isEqualTo: 'employee')
               .get();
 
       List<Map<String, dynamic>> users =

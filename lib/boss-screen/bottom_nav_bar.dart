@@ -215,7 +215,7 @@ class BottomNavBar extends StatelessWidget {
         ),
         Positioned(
           left: MediaQuery.of(context).size.width / 2 - 30,
-          bottom: 25,
+          bottom: 8,
           child: GestureDetector(
             onTap: () => _showAddOptions(context), // Updated to show popup
             child: Container(

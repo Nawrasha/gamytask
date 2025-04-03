@@ -33,14 +33,24 @@ class ProfilePage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-        title: const Text(
-          'Profile', 
-          style: TextStyle(
-            fontSize: 28,
-            color: Colors.white  // Add explicit white color
-          )
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            const SizedBox(width: 8),
+            Expanded(
+              child: Center(
+                child: const Text(
+                  'Profile', 
+                  style: TextStyle(
+                    fontSize: 28,
+                    color: Colors.white  // Add explicit white color
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
-        centerTitle: true,
+        centerTitle: false,
         backgroundColor: Colors.black,
       ),
       body: StreamBuilder<DocumentSnapshot>(
@@ -147,10 +157,18 @@ class ProfilePage extends StatelessWidget {
                               // Profile Picture
                               CircleAvatar(
                                 radius: 50,
-                                backgroundImage: userData['profileImage'] != null
-                                    ? NetworkImage(userData['profileImage'])
-                                    : const AssetImage('assets/Profilen.PNG')
-                                        as ImageProvider,
+                                backgroundColor: Colors.grey[800],
+                                child: userData['profileImage'] != null
+                                    ? CircleAvatar(
+                                        radius: 50,
+                                        backgroundImage: NetworkImage(userData['profileImage']),
+                                      )
+                                    : CircleAvatar(
+                                        radius: 50,
+                                        backgroundImage: const NetworkImage(
+                                          'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'
+                                        ),
+                                      ),
                               ),
                               const SizedBox(height: 16),
 
@@ -199,36 +217,126 @@ class ProfilePage extends StatelessWidget {
                               const SizedBox(height: 30),
 
                               // View My Team Button
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 12.0,
-                                  horizontal: 20.0,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFF0A0C16),
-                                  borderRadius: BorderRadius.circular(16),
-                                  border:
-                                      Border.all(color: Colors.white, width: 1),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: const [
-                                    Text(
-                                      'VIEW MY TEAM',
-                                      style: TextStyle(
-                                        fontFamily: 'poppins',
-                                        color: Colors.white,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
+                              GestureDetector(
+                                onTap: () async {
+                                  final teamMembers = await _getTeamMembers(userData['teamID']);
+                                  showModalBottomSheet(
+                                    context: context,
+                                    backgroundColor: Colors.transparent,
+                                    builder: (context) => Container(
+                                      height: MediaQuery.of(context).size.height * 0.7,
+                                      decoration: const BoxDecoration(
+                                        color: Color(0xFF1E1E1E),
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(20),
+                                          topRight: Radius.circular(20),
+                                        ),
+                                      ),
+                                      child: Column(
+                                        children: [
+                                          // Handle bar
+                                          Container(
+                                            margin: const EdgeInsets.only(top: 8),
+                                            width: 40,
+                                            height: 4,
+                                            decoration: BoxDecoration(
+                                              color: Colors.grey[600],
+                                              borderRadius: BorderRadius.circular(2),
+                                            ),
+                                          ),
+                                          const Padding(
+                                            padding: EdgeInsets.all(16.0),
+                                            child: Text(
+                                              'Team Members',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: ListView.builder(
+                                              itemCount: teamMembers.length,
+                                              padding: const EdgeInsets.symmetric(horizontal: 16),
+                                              itemBuilder: (context, index) {
+                                                final member = teamMembers[index];
+                                                return Container(
+                                                  margin: const EdgeInsets.only(bottom: 12),
+                                                  padding: const EdgeInsets.all(12),
+                                                  decoration: BoxDecoration(
+                                                    border: Border.all(color: Colors.white.withOpacity(0.3)),
+                                                    borderRadius: BorderRadius.circular(12),
+                                                  ),
+                                                  child: Row(
+                                                    children: [
+                                                      CircleAvatar(
+                                                        radius: 25,
+                                                        backgroundImage: NetworkImage(member['profileImage']),
+                                                      ),
+                                                      const SizedBox(width: 12),
+                                                      Expanded(
+                                                        child: Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          children: [
+                                                            Text(
+                                                              member['name'],
+                                                              style: const TextStyle(
+                                                                color: Colors.white,
+                                                                fontSize: 16,
+                                                                fontWeight: FontWeight.w500,
+                                                              ),
+                                                            ),
+                                                            Text(
+                                                              member['role'],
+                                                              style: TextStyle(
+                                                                color: Colors.grey[400],
+                                                                fontSize: 14,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                    Icon(
-                                      Icons.arrow_forward,
-                                      color: Colors.white,
-                                      size: 24,
-                                    ),
-                                  ],
+                                  );
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 12.0,
+                                    horizontal: 20.0,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFF0A0C16),
+                                    borderRadius: BorderRadius.circular(16),
+                                    border: Border.all(color: Colors.white, width: 1),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: const [
+                                      Text(
+                                        'VIEW MY TEAM',
+                                        style: TextStyle(
+                                          fontFamily: 'poppins',
+                                          color: Colors.white,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Icon(
+                                        Icons.arrow_forward,
+                                        color: Colors.white,
+                                        size: 24,
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                               const SizedBox(height: 100),
@@ -292,6 +400,42 @@ class ProfilePage extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  // Add this method to fetch team members
+  Future<List<Map<String, dynamic>>> _getTeamMembers(String teamId) async {
+    try {
+      final QuerySnapshot teamMembers = await FirebaseFirestore.instance
+          .collection('users')
+          .where('teamID', isEqualTo: teamId)
+          .get();
+
+      // Create a list of team members
+      List<Map<String, dynamic>> members = teamMembers.docs.map((doc) {
+        final data = doc.data() as Map<String, dynamic>;
+        return {
+          'name': data['name'] ?? 'Unknown',
+          'profileImage': data['profileImage'] ?? 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',
+          'role': data['role'] ?? 'Unknown',
+          'isBoss': data['role'] == 'boss', // Check if this member is the boss
+        };
+      }).toList();
+
+      // Sort the members to place the boss first
+      members.sort((a, b) {
+        if (a['isBoss'] == true && b['isBoss'] == false) {
+          return -1; // a comes before b
+        } else if (a['isBoss'] == false && b['isBoss'] == true) {
+          return 1; // b comes before a
+        }
+        return 0; // maintain original order
+      });
+
+      return members;
+    } catch (e) {
+      print('Error fetching team members: $e');
+      return [];
+    }
   }
 }
 

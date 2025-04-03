@@ -204,7 +204,7 @@ class _NotePageState extends State<NotePage> {
           children: [
             SizedBox(height: 40),
             Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 IconButton(
                   icon: const Icon(Icons.arrow_back, color: Colors.white),
@@ -213,12 +213,16 @@ class _NotePageState extends State<NotePage> {
                   },
                 ),
                 const SizedBox(width: 8),
-                const Text(
-                  "Espace privé",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
+                Expanded(
+                  child: Center(
+                    child: const Text(
+                      "Espace privé",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ),
               ],
@@ -235,10 +239,23 @@ class _NotePageState extends State<NotePage> {
             TextField(
               controller: _noteController,
               style: const TextStyle(color: Colors.white),
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 hintText: 'Écrivez vos notes ici...',
-                hintStyle: TextStyle(color: Colors.white54),
-                border: InputBorder.none,
+                hintStyle: const TextStyle(color: Colors.white54),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: Colors.white54),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: const BorderSide(color: Colors.yellow, width: 2),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: const BorderSide(color: Colors.white54, width: 2),
+                ),
+                filled: true,
+                fillColor: Colors.grey[850],
               ),
               maxLines: null,
               keyboardType: TextInputType.multiline,
@@ -253,62 +270,66 @@ class _NotePageState extends State<NotePage> {
                   horizontal: 32,
                   vertical: 16,
                 ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
-              child:
-                  _isSaving
-                      ? const CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                      )
-                      : const Text(
-                        'Save Note',
-                        style: TextStyle(fontSize: 18, color: Colors.white),
-                      ),
+              child: _isSaving
+                  ? const CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    )
+                  : const Text(
+                      'Save Note',
+                      style: TextStyle(fontSize: 18, color: Colors.white),
+                    ),
             ),
             SizedBox(height: 20),
             // Display Saved Notes
             Expanded(
-              child:
-                  _notes.isEmpty
-                      ? const Center(
-                        child: Text(
-                          "No Notes Found",
-                          style: TextStyle(color: Colors.white, fontSize: 18),
-                        ),
-                      )
-                      : ListView.builder(
-                        itemCount: _notes.length,
-                        itemBuilder: (context, index) {
-                          final note = _notes[index];
-                          return Card(
-                            margin: const EdgeInsets.only(bottom: 8.0),
-                            color: Colors.grey[800],
-                            child: ListTile(
-                              title: Text(
-                                note['content'] ?? 'No content',
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                ),
-                              ),
-                              subtitle: Text(
-                                note['timestamp'] != null
-                                    ? 'Posted on: ${note['timestamp'].toDate()}'
-                                    : '',
-                                style: const TextStyle(color: Colors.white54),
-                              ),
-                              trailing: IconButton(
-                                icon: const Icon(
-                                  Icons.edit,
-                                  color: Colors.white,
-                                ),
-                                onPressed: () {
-                                  _editNote(note['id'], note['content']);
-                                },
+              child: _notes.isEmpty
+                  ? const Center(
+                      child: Text(
+                        "No Notes Found",
+                        style: TextStyle(color: Colors.white, fontSize: 18),
+                      ),
+                    )
+                  : ListView.builder(
+                      itemCount: _notes.length,
+                      itemBuilder: (context, index) {
+                        final note = _notes[index];
+                        return Card(
+                          margin: const EdgeInsets.only(bottom: 8.0),
+                          color: Colors.grey[800],
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: ListTile(
+                            title: Text(
+                              note['content'] ?? 'No content',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
                               ),
                             ),
-                          );
-                        },
-                      ),
+                            subtitle: Text(
+                              note['timestamp'] != null
+                                  ? 'Posted on: ${note['timestamp'].toDate()}'
+                                  : '',
+                              style: const TextStyle(color: Colors.white54),
+                            ),
+                            trailing: IconButton(
+                              icon: const Icon(
+                                Icons.edit,
+                                color: Colors.white,
+                              ),
+                              onPressed: () {
+                                _editNote(note['id'], note['content']);
+                              },
+                            ),
+                          ),
+                        );
+                      },
+                    ),
             ),
           ],
         ),
