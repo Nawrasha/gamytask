@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:async';
 
 class SignUpPage extends StatefulWidget {
   @override
@@ -15,14 +16,12 @@ class _SignUpPageState extends State<SignUpPage> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController nameController = TextEditingController();
-  TextEditingController teamIdController =
-      TextEditingController(); // New controller for teamID
+  TextEditingController teamIdController = TextEditingController();
 
-  String _selectedRole = 'employee'; // Default role is employee
+  String _selectedRole = 'employee';
   bool _isLoading = false;
   String? _errorMessage;
 
-  // Function to handle the sign-up logic
   Future<void> _signUp() async {
     if (!_formKey.currentState!.validate()) return;
 
@@ -38,15 +37,46 @@ class _SignUpPageState extends State<SignUpPage> {
             password: passwordController.text.trim(),
           );
 
-      // Check if the team already has a boss
-      DocumentSnapshot teamSnapshot =
-          await _firestore
-              .collection('teams')
-              .doc(teamIdController.text.trim())
-              .get();
+      User? user = userCredential.user;
 
+      // Send email verification
+      await user!.sendEmailVerification();
+
+      // Wait for the verification (5 minutes)
+      bool isVerified = false;
+      Timer(const Duration(minutes: 5), () async {
+        if (!user.emailVerified) {
+          await _auth.currentUser!
+              .delete(); // Delete unverified user after 5 minutes
+          setState(() {
+            _errorMessage = "Email not verified. User deleted.";
+            _isLoading = false;
+          });
+          return;
+        }
+      });
+
+      // Check if email is verified
+      await Future.delayed(
+        const Duration(seconds: 3),
+      ); // Short delay before checking verification status
+
+      if (!user.emailVerified) {
+        setState(() {
+          _errorMessage = "Please verify your email to proceed.";
+          _isLoading = false;
+        });
+        return;
+      }
+
+      // Create user document in Firestore
       if (_selectedRole == 'boss') {
-        // If user is trying to sign up as a boss
+        DocumentSnapshot teamSnapshot =
+            await _firestore
+                .collection('teams')
+                .doc(teamIdController.text.trim())
+                .get();
+
         if (teamSnapshot.exists && teamSnapshot['managerId'] != null) {
           setState(() {
             _errorMessage = "This team already has a boss.";
@@ -54,38 +84,37 @@ class _SignUpPageState extends State<SignUpPage> {
           });
           return;
         }
-        // Set the managerId to this user's UID
+
         await _firestore
             .collection('teams')
             .doc(teamIdController.text.trim())
             .set({
-              'managerId': userCredential.user!.uid,
-              'members': [], // Initialize members list
+              'managerId': user.uid,
+              'members': [],
             }, SetOptions(merge: true));
       } else {
-        // If user is signing up as an employee
+        DocumentSnapshot teamSnapshot =
+            await _firestore
+                .collection('teams')
+                .doc(teamIdController.text.trim())
+                .get();
+
         if (teamSnapshot.exists) {
-          // Add the user ID to the members list
           await _firestore
               .collection('teams')
               .doc(teamIdController.text.trim())
               .update({
-                'members': FieldValue.arrayUnion([userCredential.user!.uid]),
+                'members': FieldValue.arrayUnion([user.uid]),
               });
         }
       }
 
-      // Store user details in Firestore
-      await _firestore.collection('users').doc(userCredential.user!.uid).set({
-        'uid': userCredential.user!.uid,
-        'email': emailController.text.trim(),
-        'name': nameController.text.trim(),
-        'role': _selectedRole,
-        'teamID':
-            teamIdController.text.trim(), // Save teamID from the new field
-      });
-
-      Navigator.pushReplacementNamed(context, '/'); // Redirect to AuthWrapper
+      // Navigate based on the selected role after successful verification
+      if (_selectedRole == 'boss') {
+        Navigator.pushReplacementNamed(context, '/bossHome');
+      } else if (_selectedRole == 'employee') {
+        Navigator.pushReplacementNamed(context, '/employeeHome');
+      }
     } catch (e) {
       setState(() {
         _errorMessage = "Failed to sign up. ${e.toString()}";
@@ -134,142 +163,57 @@ class _SignUpPageState extends State<SignUpPage> {
                 const SizedBox(height: 8),
                 const Text(
                   'Please fill in the form to continue',
-                  style: TextStyle(
-                    color: Colors.grey,
-                    fontSize: 16,
-                  ),
+                  style: TextStyle(color: Colors.grey, fontSize: 16),
                 ),
                 const SizedBox(height: 40),
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    border: Border.all(color: Colors.transparent, width: 1),
-                  ),
-                  child: TextFormField(
-                    controller: nameController,
-                    style: const TextStyle(color: Colors.white),
-                    decoration: InputDecoration(
-                      hintText: 'Full Name',
-                      hintStyle: const TextStyle(color: Colors.grey),
-                      border: InputBorder.none,
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
-                        borderSide: const BorderSide(color: Color(0xFFFFD700), width: 1),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
-                        borderSide: const BorderSide(color: Colors.white, width: 1),
-                      ),
-                    ),
-                    validator: (value) => value!.isEmpty ? "Enter your name" : null,
-                  ),
-                ),
+
+                buildTextField(nameController, 'Full Name'),
                 const SizedBox(height: 16),
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    border: Border.all(color: Colors.transparent, width: 1),
-                  ),
-                  child: TextFormField(
-                    controller: emailController,
-                    style: const TextStyle(color: Colors.white),
-                    decoration: InputDecoration(
-                      hintText: 'Email',
-                      hintStyle: const TextStyle(color: Colors.grey),
-                      border: InputBorder.none,
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
-                        borderSide: const BorderSide(color: Color(0xFFFFD700), width: 1),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
-                        borderSide: const BorderSide(color: Colors.white, width: 1),
-                      ),
-                    ),
-                    validator: (value) => value!.isEmpty ? "Enter a valid email" : null,
-                  ),
-                ),
+                buildTextField(emailController, 'Email'),
                 const SizedBox(height: 16),
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    border: Border.all(color: Colors.transparent, width: 1),
-                  ),
-                  child: TextFormField(
-                    controller: passwordController,
-                    obscureText: true,
-                    style: const TextStyle(color: Colors.white),
-                    decoration: InputDecoration(
-                      hintText: 'Password',
-                      hintStyle: const TextStyle(color: Colors.grey),
-                      border: InputBorder.none,
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
-                        borderSide: const BorderSide(color: Color(0xFFFFD700), width: 1),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
-                        borderSide: const BorderSide(color: Colors.white, width: 1),
-                      ),
-                    ),
-                    validator: (value) => value!.length < 6 ? "Password must be at least 6 characters" : null,
-                  ),
-                ),
+                buildTextField(passwordController, 'Password', obscure: true),
                 const SizedBox(height: 16),
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    border: Border.all(color: Colors.transparent, width: 1),
-                  ),
-                  child: TextFormField(
-                    controller: teamIdController,
-                    style: const TextStyle(color: Colors.white),
-                    decoration: InputDecoration(
-                      hintText: 'Team ID',
-                      hintStyle: const TextStyle(color: Colors.grey),
-                      border: InputBorder.none,
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
-                        borderSide: const BorderSide(color: Color(0xFFFFD700), width: 1),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
-                        borderSide: const BorderSide(color: Colors.white, width: 1),
-                      ),
-                    ),
-                    validator: (value) => value!.isEmpty ? "Enter a team ID" : null,
-                  ),
-                ),
+                buildTextField(teamIdController, 'Team ID'),
                 const SizedBox(height: 16),
+
                 Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15),
-                    border: Border.all(color: Colors.transparent, width: 1),
                   ),
                   child: DropdownButtonFormField<String>(
                     value: _selectedRole,
                     dropdownColor: Colors.black,
-                    icon: const Icon(Icons.keyboard_arrow_down, color: Colors.white),
+                    icon: const Icon(
+                      Icons.keyboard_arrow_down,
+                      color: Colors.white,
+                    ),
                     style: const TextStyle(color: Colors.white),
                     decoration: InputDecoration(
                       hintText: 'Select Role',
                       hintStyle: const TextStyle(color: Colors.grey),
                       border: InputBorder.none,
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 16,
+                      ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(15),
-                        borderSide: const BorderSide(color: Color(0xFFFFD700), width: 1),
+                        borderSide: const BorderSide(
+                          color: Color(0xFFFFD700),
+                          width: 1,
+                        ),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(15),
-                        borderSide: const BorderSide(color: Colors.white, width: 1),
+                        borderSide: const BorderSide(
+                          color: Colors.white,
+                          width: 1,
+                        ),
                       ),
                       prefixIcon: Icon(
-                        _selectedRole == 'boss' ? Icons.admin_panel_settings : Icons.person_outline,
+                        _selectedRole == 'boss'
+                            ? Icons.admin_panel_settings
+                            : Icons.person_outline,
                         color: Color(0xFFFFD700),
                       ),
                     ),
@@ -277,10 +221,13 @@ class _SignUpPageState extends State<SignUpPage> {
                       DropdownMenuItem(
                         value: 'employee',
                         child: Row(
-                          children: [
-                            Icon(Icons.person_outline, color: Color(0xFFFFD700)),
-                            const SizedBox(width: 12),
-                            const Text(
+                          children: const [
+                            Icon(
+                              Icons.person_outline,
+                              color: Color(0xFFFFD700),
+                            ),
+                            SizedBox(width: 12),
+                            Text(
                               "Employee",
                               style: TextStyle(
                                 color: Colors.white,
@@ -293,10 +240,13 @@ class _SignUpPageState extends State<SignUpPage> {
                       DropdownMenuItem(
                         value: 'boss',
                         child: Row(
-                          children: [
-                            Icon(Icons.admin_panel_settings, color: Color(0xFFFFD700)),
-                            const SizedBox(width: 12),
-                            const Text(
+                          children: const [
+                            Icon(
+                              Icons.admin_panel_settings,
+                              color: Color(0xFFFFD700),
+                            ),
+                            SizedBox(width: 12),
+                            Text(
                               "Boss",
                               style: TextStyle(
                                 color: Colors.white,
@@ -314,7 +264,9 @@ class _SignUpPageState extends State<SignUpPage> {
                     },
                   ),
                 ),
+
                 const SizedBox(height: 32),
+
                 if (_errorMessage != null)
                   Padding(
                     padding: const EdgeInsets.only(bottom: 16.0),
@@ -323,6 +275,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       style: const TextStyle(color: Colors.red),
                     ),
                   ),
+
                 SizedBox(
                   width: double.infinity,
                   height: 56,
@@ -334,19 +287,24 @@ class _SignUpPageState extends State<SignUpPage> {
                         borderRadius: BorderRadius.circular(25),
                       ),
                     ),
-                    child: _isLoading
-                        ? const CircularProgressIndicator(color: Colors.white)
-                        : const Text(
-                            'SIGN UP',
-                            style: TextStyle(
+                    child:
+                        _isLoading
+                            ? const CircularProgressIndicator(
                               color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
+                            )
+                            : const Text(
+                              'SIGN UP',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          ),
                   ),
                 ),
+
                 const SizedBox(height: 32),
+
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -370,6 +328,43 @@ class _SignUpPageState extends State<SignUpPage> {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget buildTextField(
+    TextEditingController controller,
+    String hintText, {
+    bool obscure = false,
+  }) {
+    return Container(
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(15)),
+      child: TextFormField(
+        controller: controller,
+        obscureText: obscure,
+        style: const TextStyle(color: Colors.white),
+        decoration: InputDecoration(
+          hintText: hintText,
+          hintStyle: const TextStyle(color: Colors.grey),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 16,
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15),
+            borderSide: const BorderSide(color: Color(0xFFFFD700), width: 1),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15),
+            borderSide: const BorderSide(color: Colors.white, width: 1),
+          ),
+        ),
+        validator: (value) {
+          if (value == null || value.isEmpty) return "Enter $hintText";
+          if (hintText == 'Password' && value.length < 6)
+            return "Password must be at least 6 characters";
+          return null;
+        },
       ),
     );
   }

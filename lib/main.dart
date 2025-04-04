@@ -9,6 +9,8 @@ import 'employe-screen/wrapper.dart';
 import 'boss-screen/wrapper.dart';
 import 'boss-screen/main_boss.dart';
 import 'employe-screen/main_employe.dart';
+import 'welcome/splash_screen.dart';
+import 'welcome/welcome_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,8 +39,9 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         scaffoldBackgroundColor: Colors.black,
       ),
-      home: AuthWrapper(), // Handles user authentication and navigation
+      home: SplashScreen(), // Start with SplashScreen
       routes: {
+        '/welcome': (context) => WelcomeScreen(),
         '/signin': (context) => SignInPage(),
         '/signup': (context) => SignUpPage(),
         '/bossHome': (context) => BossScreen(), // Redirect to Boss home page
